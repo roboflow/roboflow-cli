@@ -1,0 +1,25 @@
+{
+  "name": "roboflow",
+  "version": "0.0.2",
+  "description": "Roboflow.ai CLI tools",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/roboflow-ai/roboflow-node.git"
+  },
+  "keywords": [
+    "roboflow",
+    "computer",
+    "vision",
+    "datasets"
+  ],
+  "author": "Roboflow",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/roboflow-ai/roboflow-node/issues"
+  },
+  "homepage": "https://github.com/roboflow-ai/roboflow-node#readme"
+}
