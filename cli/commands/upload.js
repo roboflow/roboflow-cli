@@ -1,12 +1,11 @@
-import fetch from "node-fetch";
-import fs from "fs";
-import path from "path";
-import chalk from "chalk";
-import conf from "../../config.js";
-import { selectProjectFromWorkspace, getApiKeyWorWorkspace } from "../core.js";
-import { uploadFile } from "../../api.js";
+const fs = require("fs");
+const path = require("path");
+const conf = require("../../config.js");
 
-export default async function upload(args, options) {
+const { selectProjectFromWorkspace, getApiKeyWorWorkspace } = require("../core.js");
+const { uploadImage } = require("../../api.js");
+
+module.exports = async function upload(args, options) {
     const workspaceUrl = options.workspace;
     const apiKey = getApiKeyWorWorkspace(workspaceUrl);
     let projectUrl = options.project;
@@ -26,6 +25,7 @@ export default async function upload(args, options) {
     }
 
     for (var f of args) {
-        await uploadFile(f, projectUrl, apiKey);
+        const result = await uploadImage(f, projectUrl, apiKey);
+        console.log(result);
     }
-}
+};

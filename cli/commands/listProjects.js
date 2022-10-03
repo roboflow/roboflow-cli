@@ -1,9 +1,9 @@
-import chalk from "chalk";
+const chalk = require("chalk");
 
-import { getWorkspace } from "../../api.js";
-import { getApiKeyWorWorkspace } from "../core.js";
+const { getWorkspace } = require("../../api.js");
+const { getApiKeyWorWorkspace } = require("../core.js");
 
-export default async function listProjects(options) {
+module.exports = async function listProjects(options) {
     const workspaceUrl = options.workspace;
     const apiKey = getApiKeyWorWorkspace(workspaceUrl);
 
@@ -22,4 +22,4 @@ export default async function listProjects(options) {
     }
 
     console.log();
-}
+};

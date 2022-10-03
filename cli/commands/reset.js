@@ -1,9 +1,9 @@
-import open from "open";
+const open = require("open");
 
-import conf from "../../config.js";
-import chalk from "chalk";
+const conf = require("../../config.js");
+const chalk = require("chalk");
 
-export default async function reset() {
+module.exports = async function reset() {
     conf.clear();
     console.log(chalk.red("all data reset"));
-}
+};

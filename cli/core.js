@@ -1,10 +1,10 @@
-import chalk from "chalk";
-import conf from "../config.js";
-import enquirer from "enquirer";
+const chalk = require("chalk");
+const enquirer = require("enquirer");
+const conf = require("../config.js");
 
-import { getWorkspace } from "../api.js";
+const { getWorkspace } = require("../api.js");
 
-export function getApiKeyWorWorkspace(workspaceId) {
+function getApiKeyWorWorkspace(workspaceId) {
     const workspaces = conf.get("workspaces");
 
     if (!workspaces) {
@@ -30,7 +30,7 @@ export function getApiKeyWorWorkspace(workspaceId) {
     return workspaceConf.apiKey;
 }
 
-export async function selectWorkspace() {
+async function selectWorkspace() {
     const workspaces = conf.get("workspaces");
 
     if (!workspaces) {
@@ -60,7 +60,7 @@ export async function selectWorkspace() {
     return answer;
 }
 
-export async function selectProjectFromWorkspace(workspaceUrl) {
+async function selectProjectFromWorkspace(workspaceUrl) {
     const apiKey = getApiKeyWorWorkspace(workspaceUrl);
     const workspaceData = await getWorkspace(workspaceUrl, apiKey);
     const projects = workspaceData.workspace?.projects;
@@ -87,3 +87,9 @@ export async function selectProjectFromWorkspace(workspaceUrl) {
 
     return answer;
 }
+
+module.exports = {
+    getApiKeyWorWorkspace,
+    selectWorkspace,
+    selectProjectFromWorkspace
+};

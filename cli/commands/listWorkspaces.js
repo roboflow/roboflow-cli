@@ -1,11 +1,7 @@
-import open from "open";
+const conf = require("../../config.js");
+const chalk = require("chalk");
 
-import fetch from "node-fetch";
-
-import conf from "../../config.js";
-import chalk from "chalk";
-
-export default async function listWorkspaces() {
+module.exports = async function listWorkspaces() {
     const workspaces = conf.get("workspaces");
     const defaultWorkspaceUrl = conf.get("default_workspace");
 
@@ -37,4 +33,4 @@ export default async function listWorkspaces() {
         console.log(`  id: ${chalk.yellow(workspaceId)}`);
         console.log();
     }
-}
+};

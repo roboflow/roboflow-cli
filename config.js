@@ -1,4 +1,4 @@
-import Conf from "conf";
+const Conf = require("conf");
 
 const RF_CLI_ENV = process.env.RF_CLI_ENV;
 
@@ -21,4 +21,4 @@ if (!RF_CLI_ENV) {
     });
 }
 
-export default conf;
+module.exports = conf;

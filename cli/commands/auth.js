@@ -1,12 +1,12 @@
-import open from "open";
-import enquirer from "enquirer";
-import chalk from "chalk";
-import fetch from "node-fetch";
+const open = require("open");
+const enquirer = require("enquirer");
+const chalk = require("chalk");
+const axios = require("axios");
 
-import conf from "../../config.js";
-import selectDefaultWorkspace from "./selectDefaultWorkspace.js";
+const conf = require("../../config.js");
+const selectDefaultWorkspace = require("./selectDefaultWorkspace.js");
 
-export default async function auth() {
+module.exports = async function auth() {
     const authUrl = `https://${conf.get("app_domain")}/auth-cli`;
 
     try {
@@ -38,11 +38,11 @@ ${chalk.green(authUrl)}
 
     // fetch workspace info and auth data using the auth token
     const cli_auth_token = token_input.cli_auth_token;
-    const authDataRequest = await fetch(
+    const authDataResponse = await axios.get(
         `https://${conf.get("app_domain")}/query/cliAuthToken/${cli_auth_token}`
     );
-    const authData = await authDataRequest.json();
+    const authData = authDataResponse.data;
     conf.set("workspaces", authData);
 
     await selectDefaultWorkspace();
-}
+};

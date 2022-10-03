@@ -1,17 +1,17 @@
 #! /usr/bin/env node
 
-import { Command } from "commander";
+const { Command } = require("commander");
 
-import auth from "./commands/auth.js";
-import printConfig from "./commands/printConfig.js";
-import reset from "./commands/reset.js";
+const auth = require("./commands/auth.js");
 
-import selectDefaultWorkspace from "./commands/selectDefaultWorkspace.js";
-import listWorkspaces from "./commands/listWorkspaces.js";
-import listProjects from "./commands/listProjects.js";
-import upload from "./commands/upload.js";
+const printConfig = require("./commands/printConfig.js");
+const reset = require("./commands/reset.js");
+const selectDefaultWorkspace = require("./commands/selectDefaultWorkspace.js");
+const listWorkspaces = require("./commands/listWorkspaces.js");
+const listProjects = require("./commands/listProjects.js");
+const upload = require("./commands/upload.js");
 
-import conf from "../config.js";
+const conf = require("../config.js");
 
 global.debug = false;
 

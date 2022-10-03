@@ -1,5 +1,8 @@
-import fetch from "node-fetch";
-import config from "./config.js";
+const config = require("./config.js");
+const axios = require("axios");
+const path = require("path");
+const fs = require("fs");
+const FormData = require("form-data");
 
 async function api_GET(endpoint, apiKey) {
     const api_domain = config.get("api_domain");
@@ -9,59 +12,56 @@ async function api_GET(endpoint, apiKey) {
         console.debug(`making request to: ${url}`);
     }
 
-    const apiResponse = await fetch(`${url}?api_key=${apiKey}`);
+    const apiResponse = await axios.get(`${url}?api_key=${apiKey}`);
 
-    return apiResponse.json();
+    return apiResponse.data;
 }
 
-export async function getWorkspace(workspaceUrl, apiKey) {
+async function getWorkspace(workspaceUrl, apiKey) {
     return api_GET(`/${workspaceUrl}`, apiKey);
 }
 
-export async function getProject(workspaceUrl, projectUrl, apiKey) {
+async function getProject(workspaceUrl, projectUrl, apiKey) {
     return api_GET(`/${workspaceUrl}/${projectUrl}`, apiKey);
 }
 
-export async function getVersion(workspaceUrl, projectUrl, version, apiKey) {
+async function getVersion(workspaceUrl, projectUrl, version, apiKey) {
     return api_GET(`/${workspaceUrl}/${projectUrl}/${version}`, apiKey);
 }
 
-export async function getFormat(workspaceUrl, projectUrl, version, format, apiKey) {
+async function getFormat(workspaceUrl, projectUrl, version, format, apiKey) {
     return api_GET(`/${workspaceUrl}/${projectUrl}/${version}/${format}`, apiKey);
 }
 
-export async function uploadFile(filepath, projectUrl, apiKey) {
-    const uploadUrl = `https://${config.get(
-        "api_domain"
-    )}/dataset/${projectUrl}/upload?api_key=${apiKey}`;
-
-    console.log(uploadUrl);
-
+async function uploadImage(filepath, projectUrl, apiKey, options) {
     const filename = path.basename(filepath);
 
-    const imageData = fs.readFileSync(filepath, {
-        encoding: "base64"
-    });
+    // console.log(filename, split)
+    const formData = new FormData();
+    formData.append("name", filename);
+    formData.append("file", fs.createReadStream(filepath));
 
-    const response = await fetch(uploadUrl, {
+    if (options && options.split) {
+        formData.append("split", options.split);
+    }
+
+    const response = await axios({
         method: "POST",
-        headers: {
-            "Content-Type": "application/x-www-form-urlencoded"
+        url: `https://${config.get("api_domain")}/dataset/` + projectUrl + "/upload",
+        params: {
+            api_key: apiKey
         },
-        body: imageData
+        data: formData,
+        headers: formData.getHeaders()
     });
 
-    const responseData = await response.json();
-
-    return responseData;
+    return response.data;
 }
 
-const api = {
+module.exports = api = {
     getWorkspace,
     getProject,
     getVersion,
     getFormat,
-    uploadFile
+    uploadImage
 };
-
-export default api;

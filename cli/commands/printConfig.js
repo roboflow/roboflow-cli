@@ -1,12 +1,10 @@
-import open from "open";
-
-import config from "../../config.js";
-import chalk from "chalk";
+const conf = require("../../config.js");
+const chalk = require("chalk");
 
 const log = console.log;
 
-export default async function printConfig(options) {
-    log(chalk.green(`Config file is stored at: ${chalk.bold(config.path)}`));
+module.exports = async function printConfig(options) {
+    log(chalk.green(`Config file is stored at: ${chalk.bold(conf.path)}`));
     log(`config values:`);
-    log({ ...config.store });
-}
+    log({ ...conf.store });
+};
