@@ -1,22 +1,25 @@
 const Conf = require("conf");
 
-// these are always either default or come in via ENV vars
-// we'll handle re-authing manually when switching between staging and local
-const RF_APP_URL = process.env.RF_APP_URL || "https://app.roboflow.com";
-const RF_API_URL = process.env.RF_API_URL || "https://api.roboflow.com";
-
 const config = new Conf({
     projectSuffix: "",
     cwd: process.env.HOME + "/.config/roboflow",
     projectName: "roboflow"
 });
 
+// env vars take precedence over config values
+function getCascadingConfigValue(key, defaultValue) {
+    if (key.startsWith("RF_") && process.env[key]) {
+        return process.env[key];
+    } else if (config.has(key)) {
+        return config.get(key);
+    } else {
+        return defaultValue;
+    }
+}
+
 module.exports = {
     get: function (key) {
-        if (process.env[key]) {
-            return process.env[key];
-        }
-        return config.get(key);
+        return getCascadingConfigValue(key);
     },
 
     set(key, value) {
@@ -26,8 +29,9 @@ module.exports = {
     getAll() {
         return {
             ...config.store,
-            RF_APP_URL: RF_APP_URL,
-            RF_API_URL: RF_API_URL
+            RF_WORKSPACE: getCascadingConfigValue("RF_WORKSPACE"),
+            RF_APP_URL: getCascadingConfigValue("RF_APP_URL", "https://app.roboflow.com"),
+            RF_API_URL: getCascadingConfigValue("RF_API_URL", "https://api.roboflow.com")
         };
     },
 
