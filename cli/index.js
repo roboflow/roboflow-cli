@@ -11,6 +11,8 @@ const listWorkspaces = require("./commands/listWorkspaces.js");
 const listProjects = require("./commands/listProjects.js");
 const upload = require("./commands/upload.js");
 
+const inference = require("./commands/inference.js");
+
 const config = require("../config.js");
 
 global.debug = false;
@@ -35,6 +37,21 @@ async function main() {
     program.command("config").description("displays the current configuration").action(printConfig);
 
     program.command("reset").description("resets all config and auth settings").action(reset);
+
+    program
+        .command("detect")
+        .description("perform object detection inference on an image")
+        .requiredOption(
+            "-m --model <model>",
+            "model id (id of a version with trained model e.g. my-project/3)"
+        )
+        .option(
+            "-w --workspace [workspace]",
+            "specify a workspace url or id (will use default workspace if not specified)",
+            defaultWorkspace
+        )
+        .argument("<file>", "filesystem path to an image file")
+        .action(inference.detectObject);
 
     program
         .command("upload")

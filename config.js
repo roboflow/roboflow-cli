@@ -31,7 +31,23 @@ module.exports = {
             ...config.store,
             RF_WORKSPACE: getCascadingConfigValue("RF_WORKSPACE"),
             RF_APP_URL: getCascadingConfigValue("RF_APP_URL", "https://app.roboflow.com"),
-            RF_API_URL: getCascadingConfigValue("RF_API_URL", "https://api.roboflow.com")
+            RF_API_URL: getCascadingConfigValue("RF_API_URL", "https://api.roboflow.com"),
+            RF_OBJECT_DETECTION_URL: getCascadingConfigValue(
+                "RF_OBJECT_DETECTION_URL",
+                "https://detect.roboflow.com"
+            ),
+            RF_CLASSIFICATION_URL: getCascadingConfigValue(
+                "RF_CLASSIFICATION_URL",
+                "https://classify.roboflow.com"
+            ),
+            RF_INSTANCE_SEGMENTATION_URL: getCascadingConfigValue(
+                "RF_INSTANCE_SEGMENTATION_URL",
+                "https://outline.roboflow.com"
+            ),
+            RF_SEMANTIC_SEGMENTATION_URL: getCascadingConfigValue(
+                "RF_SEMANTIC_SEGMENTATION_URL",
+                "https://segment.roboflow.com"
+            )
         };
     },
 

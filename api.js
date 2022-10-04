@@ -58,10 +58,31 @@ async function uploadImage(filepath, projectUrl, apiKey, options) {
     return response.data;
 }
 
+async function detectObject(filepath, modelUrl, apiKey) {
+    const image = fs.readFileSync(filepath, {
+        encoding: "base64"
+    });
+
+    const response = await axios({
+        method: "POST",
+        url: `${config.get("RF_OBJECT_DETECTION_URL")}/${modelUrl}`,
+        params: {
+            api_key: apiKey
+        },
+        data: image,
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded"
+        }
+    });
+
+    return response.data;
+}
+
 module.exports = api = {
     getWorkspace,
     getProject,
     getVersion,
     getFormat,
-    uploadImage
+    uploadImage,
+    detectObject
 };
