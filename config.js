@@ -7,13 +7,14 @@ let conf;
 if (!RF_CLI_ENV) {
     conf = new Conf({
         projectSuffix: "",
+        cwd: process.env.HOME + "/.config/roboflow",
         projectName: "roboflow",
         defaults: { RF_APP_URL: "https://app.roboflow.com", RF_API_URL: "https://api.roboflow.com" }
     });
 } else {
     conf = new Conf({
         projectSuffix: RF_CLI_ENV,
-        projectName: "roboflow",
+        cwd: process.env.HOME + "/.config/roboflow",
         defaults: {
             RF_APP_URL: process.env.RF_APP_URL,
             RF_API_URL: process.env.RF_API_URL
