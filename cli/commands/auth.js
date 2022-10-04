@@ -7,7 +7,7 @@ const conf = require("../../config.js");
 const selectDefaultWorkspace = require("./selectDefaultWorkspace.js");
 
 module.exports = async function auth() {
-    const authUrl = `https://${conf.get("app_domain")}/auth-cli`;
+    const authUrl = `${conf.get("RF_APP_URL")}/auth-cli`;
 
     try {
         console.log("opening webrowser for you to log in and retrieve auth token...");
@@ -38,8 +38,9 @@ ${chalk.green(authUrl)}
 
     // fetch workspace info and auth data using the auth token
     const cli_auth_token = token_input.cli_auth_token;
+    console.log("GET", `${conf.get("RF_APP_URL")}/query/cliAuthToken/${cli_auth_token}`);
     const authDataResponse = await axios.get(
-        `https://${conf.get("app_domain")}/query/cliAuthToken/${cli_auth_token}`
+        `${conf.get("RF_APP_URL")}/query/cliAuthToken/${cli_auth_token}`
     );
     const authData = authDataResponse.data;
     conf.set("workspaces", authData);

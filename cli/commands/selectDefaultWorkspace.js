@@ -7,5 +7,5 @@ module.exports = async function selectDefaultWorkspace() {
     console.log("select default");
     const newDefaultWorkspace = await selectWorkspace();
     console.log("select default 1", newDefaultWorkspace);
-    conf.set("default_workspace", newDefaultWorkspace);
+    conf.set("RF_WORKSPACE", newDefaultWorkspace);
 };

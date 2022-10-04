@@ -5,8 +5,8 @@ const fs = require("fs");
 const FormData = require("form-data");
 
 async function api_GET(endpoint, apiKey) {
-    const api_domain = config.get("api_domain");
-    const url = `https://${api_domain}` + endpoint;
+    const RF_API_URL = config.get("RF_API_URL");
+    const url = `${RF_API_URL}` + endpoint;
 
     if (global.debug) {
         console.debug(`making request to: ${url}`);
@@ -47,7 +47,7 @@ async function uploadImage(filepath, projectUrl, apiKey, options) {
 
     const response = await axios({
         method: "POST",
-        url: `https://${config.get("api_domain")}/dataset/` + projectUrl + "/upload",
+        url: `${config.get("RF_API_URL")}/dataset/` + projectUrl + "/upload",
         params: {
             api_key: apiKey
         },
