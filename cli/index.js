@@ -11,13 +11,12 @@ const listWorkspaces = require("./commands/listWorkspaces.js");
 const listProjects = require("./commands/listProjects.js");
 const upload = require("./commands/upload.js");
 
-const conf = require("../config.js");
+const config = require("../config.js");
 
 global.debug = false;
 
 async function main() {
-    const defaultWorkspace = await conf.get("default_workspace");
-    // const defaultProject = await conf.get("default_project");
+    const defaultWorkspace = await config.get("RF_WORKSPACE");
 
     const program = new Command();
 

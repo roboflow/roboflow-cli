@@ -1,11 +1,11 @@
 const chalk = require("chalk");
 const enquirer = require("enquirer");
-const conf = require("../config.js");
+const config = require("../config.js");
 
 const { getWorkspace } = require("../api.js");
 
 function getApiKeyWorWorkspace(workspaceId) {
-    const workspaces = conf.get("workspaces");
+    const workspaces = config.get("workspaces");
 
     if (!workspaces) {
         console.log(
@@ -31,7 +31,7 @@ function getApiKeyWorWorkspace(workspaceId) {
 }
 
 async function selectWorkspace() {
-    const workspaces = conf.get("workspaces");
+    const workspaces = config.get("workspaces");
 
     if (!workspaces) {
         console.log(

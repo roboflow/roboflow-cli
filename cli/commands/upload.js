@@ -1,6 +1,5 @@
 const fs = require("fs");
 const path = require("path");
-const conf = require("../../config.js");
 
 const { selectProjectFromWorkspace, getApiKeyWorWorkspace } = require("../core.js");
 const { uploadImage } = require("../../api.js");

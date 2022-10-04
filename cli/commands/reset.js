@@ -1,9 +1,9 @@
 const open = require("open");
 
-const conf = require("../../config.js");
+const config = require("../../config.js");
 const chalk = require("chalk");
 
 module.exports = async function reset() {
-    conf.clear();
+    config.clear();
     console.log(chalk.red("all data reset"));
 };

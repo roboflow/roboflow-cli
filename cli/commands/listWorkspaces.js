@@ -1,9 +1,9 @@
-const conf = require("../../config.js");
+const config = require("../../config.js");
 const chalk = require("chalk");
 
 module.exports = async function listWorkspaces() {
-    const workspaces = conf.get("workspaces");
-    const defaultWorkspaceUrl = conf.get("RF_WORKSPACE");
+    const workspaces = config.get("workspaces");
+    const defaultWorkspaceUrl = config.get("RF_WORKSPACE");
 
     if (!workspaces) {
         console.log(
