@@ -58,7 +58,7 @@ async function uploadImage(filepath, projectUrl, apiKey, options) {
     return response.data;
 }
 
-async function detectObject(filepath, modelUrl, apiKey) {
+async function detectObject(filepath, modelUrl, apiKey, options) {
     const image = fs.readFileSync(filepath, {
         encoding: "base64"
     });
@@ -66,6 +66,67 @@ async function detectObject(filepath, modelUrl, apiKey) {
     const response = await axios({
         method: "POST",
         url: `${config.get("RF_OBJECT_DETECTION_URL")}/${modelUrl}`,
+        params: {
+            api_key: apiKey,
+            ...options
+        },
+        data: image,
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded"
+        }
+    });
+
+    return response.data;
+}
+
+async function classify(filepath, modelUrl, apiKey) {
+    const image = fs.readFileSync(filepath, {
+        encoding: "base64"
+    });
+
+    const response = await axios({
+        method: "POST",
+        url: `${config.get("RF_CLASSIFICATION_URL")}/${modelUrl}`,
+        params: {
+            api_key: apiKey
+        },
+        data: image,
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded"
+        }
+    });
+
+    return response.data;
+}
+
+async function instanceSegmentation(filepath, modelUrl, apiKey) {
+    const image = fs.readFileSync(filepath, {
+        encoding: "base64"
+    });
+
+    const response = await axios({
+        method: "POST",
+        url: `${config.get("RF_INSTANCE_SEGMENTATION_URL")}/${modelUrl}`,
+        params: {
+            api_key: apiKey
+        },
+        data: image,
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded"
+        }
+    });
+
+    return response.data;
+}
+
+async function semanticSegmentation(filepath, modelUrl, apiKey) {
+    const image = fs.readFileSync(filepath, {
+        encoding: "base64"
+    });
+
+    const response = await axios({
+        method: "POST",
+        url: `${config.get("RF_SEMANTIC_SEGMENTATION_URL")}/${modelUrl}`,
         params: {
             api_key: apiKey
         },
@@ -84,5 +145,8 @@ module.exports = api = {
     getVersion,
     getFormat,
     uploadImage,
-    detectObject
+    detectObject,
+    classify,
+    instanceSegmentation,
+    semanticSegmentation
 };

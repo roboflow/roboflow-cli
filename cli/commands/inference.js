@@ -12,26 +12,49 @@ async function detectObject(args, options) {
     const modelUrl = options.model;
     const file = args;
 
-    console.log("object detection:", modelUrl, file);
-    const result = await api.detectObject(file, modelUrl, apiKey);
+    const overlap = options.overlap;
+    const confidence = options.confidence;
+
+    const result = await api.detectObject(file, modelUrl, apiKey, { overlap, confidence });
     console.log(result);
 }
 
 async function classify(args, options) {
-    console.log(chalk.red("NOT IMPLEMENTED YET"));
+    const workspaceUrl = options.workspace;
+    const apiKey = getApiKeyWorWorkspace(workspaceUrl);
+
+    const modelUrl = options.model;
+    const file = args;
+
+    const result = await api.classify(file, modelUrl, apiKey);
+    console.log(result);
 }
 
-async function segmentInstances(args, options) {
-    console.log(chalk.red("NOT IMPLEMENTED YET"));
+async function instanceSegmentation(args, options) {
+    const workspaceUrl = options.workspace;
+    const apiKey = getApiKeyWorWorkspace(workspaceUrl);
+
+    const modelUrl = options.model;
+    const file = args;
+
+    const result = await api.instanceSegmentation(file, modelUrl, apiKey);
+    console.log(result);
 }
 
-async function segmentSemantic(args, options) {
-    console.log(chalk.red("NOT IMPLEMENTED YET"));
+async function semanticSegmentation(args, options) {
+    const workspaceUrl = options.workspace;
+    const apiKey = getApiKeyWorWorkspace(workspaceUrl);
+
+    const modelUrl = options.model;
+    const file = args;
+
+    const result = await api.semanticSegmentation(file, modelUrl, apiKey);
+    console.log(result);
 }
 
 module.exports = {
     detectObject,
     classify,
-    segmentInstances,
-    segmentSemantic
+    instanceSegmentation,
+    semanticSegmentation
 };

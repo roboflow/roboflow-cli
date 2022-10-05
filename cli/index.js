@@ -46,12 +46,66 @@ async function main() {
             "model id (id of a version with trained model e.g. my-project/3)"
         )
         .option(
+            "-c --confidence [threshold]",
+            "specify a confidence threshold between 0.0 and 1.0, default is 0.5"
+        )
+        .option(
+            "-o --overlap [threshold]",
+            "specify an overlap threshold between 0.0 and 1.0, default is 0.5",
+            0.5
+        )
+        .option(
             "-w --workspace [workspace]",
             "specify a workspace url or id (will use default workspace if not specified)",
             defaultWorkspace
         )
         .argument("<file>", "filesystem path to an image file")
         .action(inference.detectObject);
+
+    program
+        .command("classify")
+        .description("perform classification on an image")
+        .requiredOption(
+            "-m --model <model>",
+            "model id (id of a version with trained model e.g. my-project/3)"
+        )
+        .option(
+            "-w --workspace [workspace]",
+            "specify a workspace url or id (will use default workspace if not specified)",
+            defaultWorkspace
+        )
+        .argument("<file>", "filesystem path to an image file")
+        .action(inference.classify);
+
+    program
+        .command("instance-segmentation")
+        .description("perform instance segmentation on an image")
+        .requiredOption(
+            "-m --model <model>",
+            "model id (id of a version with trained model e.g. my-project/3)"
+        )
+        .option(
+            "-w --workspace [workspace]",
+            "specify a workspace url or id (will use default workspace if not specified)",
+            defaultWorkspace
+        )
+        .argument("<file>", "filesystem path to an image file")
+        .action(inference.instanceSegmentation);
+
+    program
+        .command("semantic-segmentation")
+        .description("perform semantic segmentation on an image")
+        .requiredOption(
+            "-m --model <model>",
+            "model id (id of a version with trained model e.g. my-project/3)"
+        )
+        .option(
+            "-w --workspace [workspace]",
+            "specify a workspace url or id (will use default workspace if not specified)",
+            defaultWorkspace
+        )
+        .argument("<file>", "filesystem path to an image file")
+        .action(inference.semanticSegmentation);
 
     program
         .command("upload")
