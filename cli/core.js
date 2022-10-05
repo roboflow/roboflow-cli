@@ -39,6 +39,10 @@ async function selectWorkspace() {
         );
     }
 
+    if (Object.keys(workspaces).length == 1) {
+        return Object.values(workspaces)[0].url;
+    }
+
     // ask user to select default work
     const prompt = new enquirer.Select({
         name: "default workspace",
