@@ -24,6 +24,8 @@ async function main() {
 
     program.version("0.0.1");
 
+    program.addHelpText("before", `\nroboflow cli: computer vision at your fingertips 🪄\n`);
+
     program.option("-d, --debug", "print verbose debugging info").on("option:debug", function () {
         console.log("enabling debug logging");
         global.debug = true;
