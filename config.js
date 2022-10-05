@@ -6,6 +6,11 @@ const config = new Conf({
     projectName: "roboflow"
 });
 
+const DEFAULTS = {
+    RF_APP_URL: "https://app.roboflow.com",
+    RF_API_URL: "https://api.roboflow.com"
+};
+
 // env vars take precedence over config values
 function getCascadingConfigValue(key, defaultValue) {
     if (key.startsWith("RF_") && process.env[key]) {
@@ -13,7 +18,7 @@ function getCascadingConfigValue(key, defaultValue) {
     } else if (config.has(key)) {
         return config.get(key);
     } else {
-        return defaultValue;
+        return DEFAULTS[key];
     }
 }
 
@@ -30,8 +35,8 @@ module.exports = {
         return {
             ...config.store,
             RF_WORKSPACE: getCascadingConfigValue("RF_WORKSPACE"),
-            RF_APP_URL: getCascadingConfigValue("RF_APP_URL", "https://app.roboflow.com"),
-            RF_API_URL: getCascadingConfigValue("RF_API_URL", "https://api.roboflow.com"),
+            RF_APP_URL: getCascadingConfigValue("RF_APP_URL"),
+            RF_API_URL: getCascadingConfigValue("RF_API_URL"),
             RF_OBJECT_DETECTION_URL: getCascadingConfigValue(
                 "RF_OBJECT_DETECTION_URL",
                 "https://detect.roboflow.com"
