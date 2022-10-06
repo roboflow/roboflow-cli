@@ -1,6 +1,6 @@
 #! /usr/bin/env node
 
-const { Command } = require("commander");
+const { Command, Option } = require("commander");
 
 const auth = require("./commands/auth.js");
 
@@ -127,6 +127,14 @@ async function main() {
             "-p --project [project]",
             "specify a project url or id (or the program will prompt you to select which project in your workspace to upload to)"
         )
+        .option("-b --batch <batch>", "specify a batch to add the uploaded image to")
+        .addOption(
+            new Option(
+                "-s --split <split>",
+                "specify a split value to assign the image ('train', 'valid', or 'test')"
+            ).choices(["train", "valid", "test"])
+        )
+
         .argument("<files...>")
         .action(upload);
 
@@ -169,7 +177,8 @@ async function main() {
     try {
         await program.parseAsync();
     } catch (e) {
-        console.error(e);
+        // console.error(e);
+        console.log("Exiting due to error: ", e.message);
         process.exit(1);
     }
 }

@@ -16,15 +16,22 @@ module.exports = async function upload(args, options) {
         projectUrl = await selectProjectFromWorkspace(workspaceUrl);
     }
 
-    console.log("projectUrl", projectUrl);
-
     // remove the workspace url if its in format workspace_url/project_url
     if (projectUrl.includes("/")) {
         projectUrl = projectUrl.split("/")[1];
     }
 
+    const extraOptions = {};
+    if (options.batch) {
+        extraOptions.batch = options.batch;
+    }
+
+    if (options.split) {
+        extraOptions.split = options.split;
+    }
+
     for (var f of args) {
-        const result = await uploadImage(f, projectUrl, apiKey);
+        const result = await uploadImage(f, projectUrl, apiKey, extraOptions);
         console.log(result);
     }
 };

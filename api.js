@@ -45,6 +45,10 @@ async function uploadImage(filepath, projectUrl, apiKey, options) {
         formData.append("split", options.split);
     }
 
+    if (options && options.batch) {
+        formData.append("batch", options.batch);
+    }
+
     const response = await axios({
         method: "POST",
         url: `${config.get("RF_API_URL")}/dataset/` + projectUrl + "/upload",
