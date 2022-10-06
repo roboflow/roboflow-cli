@@ -12,7 +12,7 @@ module.exports = async function listWorkspaces() {
         return;
     }
 
-    const defaultWorkspace = Object.values(workspaces).find((w) => (w.url = defaultWorkspaceUrl));
+    const defaultWorkspace = Object.values(workspaces).find((w) => w.url == defaultWorkspaceUrl);
 
     console.log();
     console.log(`${chalk.bold.green("Default Workspace:")}`);

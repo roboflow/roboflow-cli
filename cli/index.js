@@ -4,12 +4,12 @@ const { Command } = require("commander");
 
 const auth = require("./commands/auth.js");
 
-const printConfig = require("./commands/printConfig.js");
-const reset = require("./commands/reset.js");
+const configuration = require("./commands/configuration.js");
 const selectDefaultWorkspace = require("./commands/selectDefaultWorkspace.js");
 const listWorkspaces = require("./commands/listWorkspaces.js");
 const listProjects = require("./commands/listProjects.js");
 const upload = require("./commands/upload.js");
+const open = require("./commands/open.js");
 
 const inference = require("./commands/inference.js");
 
@@ -36,9 +36,15 @@ async function main() {
         .description("log in to roboflow to store auth credentials for your workspaces")
         .action(auth);
 
-    program.command("config").description("displays the current configuration").action(printConfig);
-
-    program.command("reset").description("resets all config and auth settings").action(reset);
+    program
+        .command("open")
+        .description("opens a roboflow workspace or project in your browser")
+        .option(
+            "-w --workspace [workspace]",
+            "specify a workspace url or id (will use default workspace if not specified)",
+            defaultWorkspace
+        )
+        .action(open);
 
     program
         .command("detect")
@@ -153,6 +159,12 @@ async function main() {
         .action(listProjects);
 
     program.addCommand(project);
+
+    program
+        .command("config")
+        .description("Manage local roboflow config.  Prints config values if run without options")
+        .argument("[action]", "'show' or 'reset'.  Default is 'show'", "show")
+        .action(configuration);
 
     try {
         await program.parseAsync();
