@@ -38,12 +38,18 @@ ${chalk.green(authUrl)}
 
     // fetch workspace info and auth data using the auth token
     const cli_auth_token = token_input.cli_auth_token;
-    console.log("GET", `${config.get("RF_APP_URL")}/query/cliAuthToken/${cli_auth_token}`);
-    const authDataResponse = await axios.get(
-        `${config.get("RF_APP_URL")}/query/cliAuthToken/${cli_auth_token}`
-    );
-    const authData = authDataResponse.data;
-    config.set("workspaces", authData);
+
+    try {
+        // console.log("GET", `${config.get("RF_APP_URL")}/query/cliAuthToken/${cli_auth_token}`);
+        const authDataResponse = await axios.get(
+            `${config.get("RF_APP_URL")}/query/cliAuthToken/${cli_auth_token}`
+        );
+        const authData = authDataResponse.data;
+        config.set("workspaces", authData);
+    } catch (e) {
+        console.error(chalk.red("failed to validate auth token"));
+        console.log(e);
+    }
 
     await selectDefaultWorkspace();
 };
