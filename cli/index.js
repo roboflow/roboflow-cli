@@ -130,16 +130,20 @@ async function main() {
             "-p --project [project]",
             "specify a project url or id (or the program will prompt you to select which project in your workspace to upload to)"
         )
+
+        .argument("<files...>")
         .option("-b --batch <batch>", "specify a batch to add the uploaded image to")
+        .option(
+            "-a --annotation <annotationFile>",
+            "specify an annotation filename.  you can pass e.g. '[filename].xml to match based on the image filename'"
+        )
         .addOption(
             new Option(
                 "-s --split <split>",
                 "specify a split value to assign the image ('train', 'valid', or 'test')"
             ).choices(["train", "valid", "test"])
         )
-
-        .argument("<files...>")
-        .action(upload);
+        .action(upload.uploadImage);
 
     // workspace subcommands
     const workspace = new Command("workspace").description(
@@ -204,8 +208,11 @@ async function main() {
     try {
         await program.parseAsync();
     } catch (e) {
-        // console.error(e);
-        console.log("Exiting due to error: ", e.message);
+        console.error(e.message);
+        if (global.debug) {
+            console.log("[debug]", e);
+        }
+
         process.exit(1);
     }
 }

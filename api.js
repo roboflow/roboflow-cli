@@ -49,17 +49,50 @@ async function uploadImage(filepath, projectUrl, apiKey, options) {
         formData.append("batch", options.batch);
     }
 
-    const response = await axios({
-        method: "POST",
-        url: `${config.get("RF_API_URL")}/dataset/` + projectUrl + "/upload",
-        params: {
-            api_key: apiKey
-        },
-        data: formData,
-        headers: formData.getHeaders()
-    });
+    try {
+        const response = await axios({
+            method: "POST",
+            url: `${config.get("RF_API_URL")}/dataset/` + projectUrl + "/upload",
+            params: {
+                api_key: apiKey
+            },
+            data: formData,
+            headers: formData.getHeaders()
+        });
+        return response.data;
+    } catch (e) {
+        if (e.response) {
+            return e.response.data;
+        }
+        throw e;
+    }
+}
 
-    return response.data;
+async function uploadAnnotation(imageID, annotationFile, projectUrl, apiKey) {
+    const filename = path.basename(annotationFile);
+    const annotationData = fs.readFileSync(annotationFile, "utf-8");
+
+    try {
+        const response = await axios({
+            method: "POST",
+            url: `${config.get("RF_API_URL")}/dataset/${projectUrl}/annotate/${imageID}`,
+            params: {
+                api_key: apiKey,
+                name: filename
+            },
+            data: annotationData,
+            headers: {
+                "Content-Type": "text/plain"
+            }
+        });
+
+        return response.data;
+    } catch (e) {
+        if (e.response) {
+            return e.response.data;
+        }
+        throw e;
+    }
 }
 
 async function detectObject(filepath, modelUrl, apiKey, options) {
@@ -149,6 +182,7 @@ module.exports = api = {
     getVersion,
     getFormat,
     uploadImage,
+    uploadAnnotation,
     detectObject,
     classify,
     instanceSegmentation,

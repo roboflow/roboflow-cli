@@ -2,9 +2,9 @@ const fs = require("fs");
 const path = require("path");
 
 const { selectProjectFromWorkspace, getApiKeyWorWorkspace } = require("../core.js");
-const { uploadImage } = require("../../api.js");
+const api = require("../../api.js");
 
-module.exports = async function upload(args, options) {
+async function uploadImage(args, options) {
     const workspaceUrl = options.workspace;
     const apiKey = getApiKeyWorWorkspace(workspaceUrl);
     let projectUrl = options.project;
@@ -30,8 +30,46 @@ module.exports = async function upload(args, options) {
         extraOptions.split = options.split;
     }
 
-    for (var f of args) {
-        const result = await uploadImage(f, projectUrl, apiKey, extraOptions);
-        console.log(result);
+    if (options.annotation) {
+
+        for (var f of args) {
+            // console.log("upload:", f, projectUrl, apiKey, extraOptions);
+            const uploadResult = await api.uploadImage(f, projectUrl, apiKey, extraOptions);
+            console.log("image uploaded: ", uploadResult);
+            const imageId = uploadResult.id;
+
+            let annotationFilename = options.annotation;
+
+            if (annotationFilename.includes("[filename]")) {
+                annotationFilename = annotationFilename.replace("[filename]", path.parse(f).name);
+            }
+
+            if (fs.existsSync(annotationFilename)) {
+                const annotationResult = await api.uploadAnnotation(
+                    imageId,
+                    annotationFilename,
+                    projectUrl,
+                    apiKey
+                );
+                console.log("annotation uploaded:", annotationResult);
+            } else {
+                console.log(
+                    `cant stat annotation file: '${annotationFilename}'.  image uplaoded without annotation`
+                );
+                continue;
+            }
+        }
+    } else {
+        // console.log("upload unanotated", args, options);
+
+        for (var f of args) {
+            console.log("upload:", f, projectUrl, apiKey, extraOptions);
+            // const result = await api.uploadImage(f, projectUrl, apiKey, extraOptions);
+            console.log("image uplaoded:", result);
+        }
     }
+}
+
+module.exports = {
+    uploadImage
 };
