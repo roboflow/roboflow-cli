@@ -6,8 +6,8 @@ const auth = require("./commands/auth.js");
 
 const configuration = require("./commands/configuration.js");
 const selectDefaultWorkspace = require("./commands/selectDefaultWorkspace.js");
-const listWorkspaces = require("./commands/listWorkspaces.js");
-const listProjects = require("./commands/listProjects.js");
+const workspaceCommands = require("./commands/workspace.js");
+const projectCommands = require("./commands/project.js");
 const upload = require("./commands/upload.js");
 const open = require("./commands/open.js");
 
@@ -24,7 +24,10 @@ async function main() {
 
     program.version("0.0.1");
 
-    program.addHelpText("before", `\nroboflow cli: computer vision at your fingertips 🪄\n`);
+    program.addHelpText(
+        "before",
+        `\nWelcome to the roboflow CLI: computer vision at your fingertips 🪄\n`
+    );
 
     program.option("-d, --debug", "print verbose debugging info").on("option:debug", function () {
         console.log("enabling debug logging");
@@ -38,7 +41,7 @@ async function main() {
 
     program
         .command("open")
-        .description("opens a roboflow workspace or project in your browser")
+        .description("opens a roboflow workspace in your browser")
         .option(
             "-w --workspace [workspace]",
             "specify a workspace url or id (will use default workspace if not specified)",
@@ -147,7 +150,20 @@ async function main() {
         .description("select a default workspace")
         .action(selectDefaultWorkspace);
 
-    workspace.command("list").description("list workspaces").action(listWorkspaces);
+    workspace
+        .command("get")
+        .description("show detailed info for a workspace")
+        .option(
+            "-w --workspace [workspace]",
+            "specify a workspace url or id (will use default workspace if not specified)",
+            defaultWorkspace
+        )
+        .action(workspaceCommands.workspaceDetails);
+
+    workspace
+        .command("list")
+        .description("list workspaces")
+        .action(workspaceCommands.listWorkspaces);
 
     program.addCommand(workspace);
 
@@ -164,7 +180,18 @@ async function main() {
             "specify a workspace url or id (will use default workspace if not specified)",
             defaultWorkspace
         )
-        .action(listProjects);
+        .action(projectCommands.listProjects);
+
+    project
+        .command("get")
+        .description("show detailed info for a project")
+        .option(
+            "-w --workspace [workspace]",
+            "specify a workspace url or id (will use default workspace if not specified)",
+            defaultWorkspace
+        )
+        .argument("<projectId>")
+        .action(projectCommands.projectDetails);
 
     program.addCommand(project);
 
