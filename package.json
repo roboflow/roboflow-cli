@@ -1,6 +1,6 @@
 {
   "name": "roboflow",
-  "version": "0.0.11",
+  "version": "0.0.12",
   "description": "Roboflow.ai node module and CLI tools",
   "main": "index.js",
   "scripts": {
