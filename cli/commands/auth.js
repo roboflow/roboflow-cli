@@ -4,7 +4,7 @@ const chalk = require("chalk");
 const axios = require("axios");
 
 const config = require("../../config.js");
-const selectDefaultWorkspace = require("./selectDefaultWorkspace.js");
+const { selectDefaultWorkspace } = require("./workspace.js");
 
 module.exports = async function auth() {
     const authUrl = `${config.get("RF_APP_URL")}/auth-cli`;

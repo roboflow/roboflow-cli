@@ -3,7 +3,7 @@ const chalk = require("chalk");
 const { link } = require("../utils");
 
 const { getWorkspace } = require("../../api.js");
-const { getApiKeyWorWorkspace } = require("../core.js");
+const { getApiKeyWorWorkspace, selectWorkspace } = require("../core.js");
 
 require("util").inspect.defaultOptions.depth = null;
 
@@ -14,6 +14,11 @@ function printWorkspace(workspace) {
     console.log(` ${chalk.bold(workspace.name)}`);
     console.log(`  link: ${workspaceLink}`);
     console.log(`  id: ${chalk.yellow(workspace.url)}`);
+}
+
+async function selectDefaultWorkspace() {
+    const newDefaultWorkspace = await selectWorkspace();
+    config.set("RF_WORKSPACE", newDefaultWorkspace);
 }
 
 async function listWorkspaces() {
@@ -29,16 +34,21 @@ async function listWorkspaces() {
 
     const defaultWorkspace = Object.values(workspaces).find((w) => w.url == defaultWorkspaceUrl);
 
-    console.log();
-    console.log(`${chalk.bold.green("Default Workspace:")}`);
-    printWorkspace(defaultWorkspace);
-    console.log();
-    console.log(`Other  Workspaces:`);
-
-    for (let workspaceId of Object.keys(workspaces)) {
-        if (workspaceId == defaultWorkspace.id) continue;
-        printWorkspace(workspaces[workspaceId]);
+    if (workspaces.length > 1) {
         console.log();
+        console.log(`${chalk.bold.green("Default Workspace:")}`);
+
+        printWorkspace(defaultWorkspace);
+        console.log();
+        console.log(`Other  Workspaces:`);
+
+        for (let workspaceId of Object.keys(workspaces)) {
+            if (workspaceId == defaultWorkspace.id) continue;
+            printWorkspace(workspaces[workspaceId]);
+            console.log();
+        }
+    } else {
+        printWorkspace(defaultWorkspace);
     }
 }
 
@@ -52,5 +62,6 @@ async function workspaceDetails(options) {
 
 module.exports = {
     listWorkspaces,
-    workspaceDetails
+    workspaceDetails,
+    selectDefaultWorkspace
 };

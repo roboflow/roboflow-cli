@@ -4,7 +4,6 @@ const chalk = require("chalk");
 const axios = require("axios");
 
 const config = require("../../config.js");
-const selectDefaultWorkspace = require("./selectDefaultWorkspace.js");
 
 module.exports = async function openRoboflow(options) {
     return openWorkspace(options);

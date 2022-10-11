@@ -5,7 +5,6 @@ const { Command, Option } = require("commander");
 const auth = require("./commands/auth.js");
 
 const configuration = require("./commands/configuration.js");
-const selectDefaultWorkspace = require("./commands/selectDefaultWorkspace.js");
 const workspaceCommands = require("./commands/workspace.js");
 const projectCommands = require("./commands/project.js");
 const upload = require("./commands/upload.js");
@@ -40,6 +39,12 @@ async function main() {
         .action(auth);
 
     program
+        .command("config")
+        .description("Manage local roboflow config.  Prints config values if run without options")
+        .argument("[action]", "'show' or 'reset'.  Default is 'show'", "show")
+        .action(configuration);
+
+    program
         .command("open")
         .description("opens a roboflow workspace in your browser")
         .option(
@@ -49,102 +54,6 @@ async function main() {
         )
         .action(open);
 
-    program
-        .command("detect")
-        .description("perform object detection inference on an image")
-        .requiredOption(
-            "-m --model <model>",
-            "model id (id of a version with trained model e.g. my-project/3)"
-        )
-        .option(
-            "-c --confidence [threshold]",
-            "specify a confidence threshold between 0.0 and 1.0, default is 0.5"
-        )
-        .option(
-            "-o --overlap [threshold]",
-            "specify an overlap threshold between 0.0 and 1.0, default is 0.5",
-            0.5
-        )
-        .option(
-            "-w --workspace [workspace]",
-            "specify a workspace url or id (will use default workspace if not specified)",
-            defaultWorkspace
-        )
-        .argument("<file>", "filesystem path to an image file")
-        .action(inference.detectObject);
-
-    program
-        .command("classify")
-        .description("perform classification on an image")
-        .requiredOption(
-            "-m --model <model>",
-            "model id (id of a version with trained model e.g. my-project/3)"
-        )
-        .option(
-            "-w --workspace [workspace]",
-            "specify a workspace url or id (will use default workspace if not specified)",
-            defaultWorkspace
-        )
-        .argument("<file>", "filesystem path to an image file")
-        .action(inference.classify);
-
-    program
-        .command("instance-segmentation")
-        .description("perform instance segmentation on an image")
-        .requiredOption(
-            "-m --model <model>",
-            "model id (id of a version with trained model e.g. my-project/3)"
-        )
-        .option(
-            "-w --workspace [workspace]",
-            "specify a workspace url or id (will use default workspace if not specified)",
-            defaultWorkspace
-        )
-        .argument("<file>", "filesystem path to an image file")
-        .action(inference.instanceSegmentation);
-
-    program
-        .command("semantic-segmentation")
-        .description("perform semantic segmentation on an image")
-        .requiredOption(
-            "-m --model <model>",
-            "model id (id of a version with trained model e.g. my-project/3)"
-        )
-        .option(
-            "-w --workspace [workspace]",
-            "specify a workspace url or id (will use default workspace if not specified)",
-            defaultWorkspace
-        )
-        .argument("<file>", "filesystem path to an image file")
-        .action(inference.semanticSegmentation);
-
-    program
-        .command("upload")
-        .description("upload a file to your project")
-        .option(
-            "-w --workspace [workspace]",
-            "specify a workspace url or id (will use default workspace if not specified)",
-            defaultWorkspace
-        )
-        .option(
-            "-p --project [project]",
-            "specify a project url or id (or the program will prompt you to select which project in your workspace to upload to)"
-        )
-
-        .argument("<files...>")
-        .option("-b --batch <batch>", "specify a batch to add the uploaded image to")
-        .option(
-            "-a --annotation <annotationFile>",
-            "specify an annotation filename.  you can pass e.g. '[filename].xml to match based on the image filename'"
-        )
-        .addOption(
-            new Option(
-                "-s --split <split>",
-                "specify a split value to assign the image ('train', 'valid', or 'test')"
-            ).choices(["train", "valid", "test"])
-        )
-        .action(upload.uploadImage);
-
     // workspace subcommands
     const workspace = new Command("workspace").description(
         "workspace related commands.  type 'roboflow workspace' to see detailed command help"
@@ -152,7 +61,7 @@ async function main() {
     workspace
         .command("select")
         .description("select a default workspace")
-        .action(selectDefaultWorkspace);
+        .action(workspaceCommands.selectDefaultWorkspace);
 
     workspace
         .command("get")
@@ -200,10 +109,67 @@ async function main() {
     program.addCommand(project);
 
     program
-        .command("config")
-        .description("Manage local roboflow config.  Prints config values if run without options")
-        .argument("[action]", "'show' or 'reset'.  Default is 'show'", "show")
-        .action(configuration);
+        .command("upload")
+        .description("upload a file to your project")
+        .option(
+            "-w --workspace [workspace]",
+            "specify a workspace url or id (will use default workspace if not specified)",
+            defaultWorkspace
+        )
+        .option(
+            "-p --project [project]",
+            "specify a project url or id (or the program will prompt you to select which project in your workspace to upload to)"
+        )
+
+        .argument("<files...>")
+        .option("-b --batch <batch>", "specify a batch to add the uploaded image to")
+        .option(
+            "-a --annotation <annotationFile>",
+            "specify an annotation filename.  you can pass e.g. '[filename].xml to match based on the image filename'"
+        )
+        .addOption(
+            new Option("-s --split <split>", "specify a split value to assign the image").choices([
+                "train",
+                "valid",
+                "test"
+            ])
+        )
+        .action(upload.uploadImage);
+
+    program
+        .command("infer")
+        .description("perform object detection inference on an image")
+        .requiredOption(
+            "-m --model <model>",
+            "model id (id of a version with trained model e.g. my-project/3)"
+        )
+        .option(
+            "-c --confidence [threshold]",
+            "specify a confidence threshold between 0.0 and 1.0, default is 0.5 (only applies to object-detection models)"
+        )
+        .option(
+            "-o --overlap [threshold]",
+            "specify an overlap threshold between 0.0 and 1.0, default is 0.5 (only applies to object-detection models)",
+            0.5
+        )
+        .option(
+            "-w --workspace [workspace]",
+            "specify a workspace url or id (will use default workspace if not specified)",
+            defaultWorkspace
+        )
+        .addOption(
+            new Option(
+                "-t --type [modelType]",
+                `specify the model type to skip api call to look it up`
+            ).choices([
+                "object-detection",
+                "classification",
+                "instance-segmentation",
+                "semantic-segmentation"
+            ])
+        )
+        .argument("<file>", "filesystem path to an image file")
+        .action(inference.infer);
 
     try {
         await program.parseAsync();

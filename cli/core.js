@@ -40,6 +40,10 @@ async function selectWorkspace() {
     }
 
     if (Object.keys(workspaces).length == 1) {
+        console.log(
+            "nothign to select from, only 1 default workspace authorized:",
+            chalk.green(Object.values(workspaces)[0].url)
+        );
         return Object.values(workspaces)[0].url;
     }
 

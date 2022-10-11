@@ -5,6 +5,44 @@ const fs = require("fs");
 const api = require("../../api.js");
 const { getApiKeyWorWorkspace } = require("../core.js");
 
+async function infer(args, options) {
+    const workspaceUrl = options.workspace;
+    const apiKey = getApiKeyWorWorkspace(workspaceUrl);
+
+    // console.log("infer", args, options);
+
+    //this is project/version
+    const modelUrl = options.model;
+
+    const [projectUrl, modelVersion] = modelUrl.split("/");
+
+    let inferenceType = options.type;
+
+    if (!inferenceType) {
+        //fetch the version so we know which endpoint / model type to use
+        const versionData = await api.getVersion(workspaceUrl, projectUrl, modelVersion, apiKey);
+        if (!versionData.version.model) {
+            throw new Error("no trained model found for this version");
+        }
+
+        inferenceType = versionData.project.type;
+    }
+
+    switch (inferenceType) {
+        case "object-detection":
+            return detectObject(args, options);
+        case "classification":
+            return classify(args, options);
+        case "instance-segmentation":
+            return instanceSegmentation(args, options);
+        case "semantic-segmentation":
+            return semanticSegmentation(args, options);
+        default:
+            console.log("unknown project type:", inferenceType);
+            return;
+    }
+}
+
 async function detectObject(args, options) {
     const workspaceUrl = options.workspace;
     const apiKey = getApiKeyWorWorkspace(workspaceUrl);
@@ -53,6 +91,7 @@ async function semanticSegmentation(args, options) {
 }
 
 module.exports = {
+    infer,
     detectObject,
     classify,
     instanceSegmentation,
