@@ -4,7 +4,7 @@
   "description": "Roboflow.ai node module and CLI tools",
   "main": "index.js",
   "scripts": {
-    "test": "jest"
+    
   },
   "repository": {
     "type": "git",
