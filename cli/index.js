@@ -21,7 +21,7 @@ async function main() {
 
     const program = new Command();
 
-    program.version("0.0.1");
+    program.version(require("../package.json").version);
 
     program.addHelpText(
         "before",
