@@ -120,6 +120,7 @@ async function main() {
             "-p --project [project]",
             "specify a project url or id (or the program will prompt you to select which project in your workspace to upload to)"
         )
+        .option("-c --concurrent [n]", "how many image uploads to perform concurrently", 50)
 
         .argument("<files...>")
         .option("-b --batch <batch>", "specify a batch to add the uploaded image to")

@@ -1,8 +1,41 @@
 const fs = require("fs");
 const path = require("path");
+const pLimit = require("p-limit");
 
 const { selectProjectFromWorkspace, getApiKeyWorWorkspace } = require("../core.js");
 const api = require("../../api.js");
+
+async function uploadWithAnnotation(f, annotationFilename, projectUrl, apiKey, extraOptions) {
+    console.log("upload", f);
+    const uploadResult = await api.uploadImage(f, projectUrl, apiKey, extraOptions);
+    const imageId = uploadResult.id;
+
+    if (annotationFilename.includes("[filename]")) {
+        annotationFilename = annotationFilename.replace("[filename]", path.parse(f).name);
+    }
+
+    if (fs.existsSync(annotationFilename)) {
+        const annotationResult = await api.uploadAnnotation(
+            imageId,
+            annotationFilename,
+            projectUrl,
+            apiKey
+        );
+        console.log("image uploaded: ", uploadResult);
+        console.log("  with annotation uploaded:", annotationResult);
+    } else {
+        console.log("image uploaded: ", uploadResult);
+        console.log(
+            `   cant stat annotation file: '${annotationFilename}'.  image uploaded without annotation`
+        );
+        return;
+    }
+}
+
+async function uploadSimple(f, projectUrl, apiKey, extraOption) {
+    const result = await api.uploadImage(f, projectUrl, apiKey, extraOptions);
+    console.log("image uploaded:", result);
+}
 
 async function uploadImage(args, options) {
     const workspaceUrl = options.workspace;
@@ -30,43 +63,31 @@ async function uploadImage(args, options) {
         extraOptions.split = options.split;
     }
 
+    let concurrency = 50;
+    if (options.concurrent) {
+        concurrency = parseInt(options.concurrent);
+    }
+
+    const uploadPromises = [];
+
+    const limit = pLimit(concurrency);
+
     if (options.annotation) {
-        for (var f of args) {
-            // console.log("upload:", f, projectUrl, apiKey, extraOptions);
-            const uploadResult = await api.uploadImage(f, projectUrl, apiKey, extraOptions);
-            console.log("image uploaded: ", uploadResult);
-            const imageId = uploadResult.id;
+        for (let f of args) {
+            const p = limit(() =>
+                uploadWithAnnotation(f, options.annotation, projectUrl, apiKey, extraOptions)
+            );
 
-            let annotationFilename = options.annotation;
-
-            if (annotationFilename.includes("[filename]")) {
-                annotationFilename = annotationFilename.replace("[filename]", path.parse(f).name);
-            }
-
-            if (fs.existsSync(annotationFilename)) {
-                const annotationResult = await api.uploadAnnotation(
-                    imageId,
-                    annotationFilename,
-                    projectUrl,
-                    apiKey
-                );
-                console.log("annotation uploaded:", annotationResult);
-            } else {
-                console.log(
-                    `cant stat annotation file: '${annotationFilename}'.  image uplaoded without annotation`
-                );
-                continue;
-            }
+            uploadPromises.push(p);
         }
     } else {
-        // console.log("upload unanotated", args, options);
-
-        for (var f of args) {
-            // console.log("upload:", f, projectUrl, apiKey, extraOptions);
-            const result = await api.uploadImage(f, projectUrl, apiKey, extraOptions);
-            console.log("image uplaoded:", result);
+        for (let f of args) {
+            const p = limit(() => uploadSimple(f, projectUrl, apiKey, extraOptions));
+            uploadPromises.push(p);
         }
     }
+
+    await Promise.all(uploadPromises);
 }
 
 module.exports = {
