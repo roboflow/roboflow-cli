@@ -31,7 +31,6 @@ async function uploadImage(args, options) {
     }
 
     if (options.annotation) {
-
         for (var f of args) {
             // console.log("upload:", f, projectUrl, apiKey, extraOptions);
             const uploadResult = await api.uploadImage(f, projectUrl, apiKey, extraOptions);
@@ -63,8 +62,8 @@ async function uploadImage(args, options) {
         // console.log("upload unanotated", args, options);
 
         for (var f of args) {
-            console.log("upload:", f, projectUrl, apiKey, extraOptions);
-            // const result = await api.uploadImage(f, projectUrl, apiKey, extraOptions);
+            // console.log("upload:", f, projectUrl, apiKey, extraOptions);
+            const result = await api.uploadImage(f, projectUrl, apiKey, extraOptions);
             console.log("image uplaoded:", result);
         }
     }

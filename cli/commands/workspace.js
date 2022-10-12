@@ -34,7 +34,7 @@ async function listWorkspaces() {
 
     const defaultWorkspace = Object.values(workspaces).find((w) => w.url == defaultWorkspaceUrl);
 
-    if (workspaces.length > 1) {
+    if (Object.keys(workspaces).length > 1) {
         console.log();
         console.log(`${chalk.bold.green("Default Workspace:")}`);
 
