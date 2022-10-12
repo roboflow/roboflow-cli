@@ -6,7 +6,6 @@ const { selectProjectFromWorkspace, getApiKeyWorWorkspace } = require("../core.j
 const api = require("../../api.js");
 
 async function uploadWithAnnotation(f, annotationFilename, projectUrl, apiKey, extraOptions) {
-    console.log("upload", f);
     const uploadResult = await api.uploadImage(f, projectUrl, apiKey, extraOptions);
     const imageId = uploadResult.id;
 
@@ -21,10 +20,10 @@ async function uploadWithAnnotation(f, annotationFilename, projectUrl, apiKey, e
             projectUrl,
             apiKey
         );
-        console.log("image uploaded: ", uploadResult);
-        console.log("  with annotation uploaded:", annotationResult);
+        console.log(`  ${f} uploaded: `, uploadResult);
+        console.log("    annotation upload:", annotationResult);
     } else {
-        console.log("image uploaded: ", uploadResult);
+        console.log(`  ${f} uploaded: `, uploadResult);
         console.log(
             `   cant stat annotation file: '${annotationFilename}'.  image uploaded without annotation`
         );
@@ -34,7 +33,7 @@ async function uploadWithAnnotation(f, annotationFilename, projectUrl, apiKey, e
 
 async function uploadSimple(f, projectUrl, apiKey, extraOption) {
     const result = await api.uploadImage(f, projectUrl, apiKey, extraOptions);
-    console.log("image uploaded:", result);
+    console.log("  image uploaded:", result);
 }
 
 async function uploadImage(args, options) {
