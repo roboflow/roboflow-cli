@@ -63,7 +63,7 @@ async function uploadImage(args, options) {
         extraOptions.split = options.split;
     }
 
-    let concurrency = 50;
+    let concurrency = 10;
     if (options.concurrent) {
         concurrency = parseInt(options.concurrent);
     }
