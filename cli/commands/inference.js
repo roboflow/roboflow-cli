@@ -20,10 +20,14 @@ async function infer(args, options) {
 
     if (!inferenceType) {
         //fetch the version so we know which endpoint / model type to use
+
         const versionData = await api.getVersion(workspaceUrl, projectUrl, modelVersion, apiKey);
-        if (!versionData.version.model) {
-            throw new Error("no trained model found for this version");
-        }
+
+        console.log(versionData);
+
+        // if (!versionData.version.model) {
+        //     throw new Error("no trained model found for this version");
+        // }
 
         inferenceType = versionData.project.type;
     }
