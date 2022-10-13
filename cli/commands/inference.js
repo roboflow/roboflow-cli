@@ -23,7 +23,7 @@ async function infer(args, options) {
 
         const versionData = await api.getVersion(workspaceUrl, projectUrl, modelVersion, apiKey);
 
-        console.log(versionData);
+        // console.log(versionData);
 
         // if (!versionData.version.model) {
         //     throw new Error("no trained model found for this version");
