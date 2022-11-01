@@ -146,11 +146,13 @@ async function importDataset(datasetFolder, options) {
 
     const projectData = await api.getProject(workspaceUrl, projectUrl, apiKey);
 
+    if (projectData.project.type == "classification") {
+        console.log("Importing dataset is is not supported for classification type projects yet");
+        return;
+    }
+
     const datasetName = projectData.project.name;
     const annotationGroup = projectData.project.annotation;
-
-    // console.log("args:", datasetFolder, "options:", options);
-    // console.log("project:", projectData);
 
     const parsedDataset = parseFolder(datasetFolder);
 
