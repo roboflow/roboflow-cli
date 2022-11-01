@@ -137,6 +137,23 @@ async function main() {
         .action(upload.uploadImage);
 
     program
+        .command("import")
+        .description("import a dataset from a local folder to your project")
+        .option(
+            "-w --workspace [workspace]",
+            "specify a workspace url or id (will use default workspace if not specified)",
+            defaultWorkspace
+        )
+        .option(
+            "-p --project [project]",
+            "specify a project url or id (or the program will prompt you to select which project in your workspace to upload to)"
+        )
+        .option("-c --concurrent [n]", "how many image uploads to perform concurrently", 10)
+        .argument("<folder>", "filesystem path to a folder that contains your dataset")
+
+        .action(upload.importDataset);
+
+    program
         .command("infer")
         .description("perform object detection inference on an image")
         .requiredOption(

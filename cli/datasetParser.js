@@ -48,7 +48,7 @@ function parseAnnotations(files, labelMap) {
             const fileExt = path.extname(f).replace(/^\./, ""); // Annotation.parse expects it without the .
 
             const annotationsToAdd = annotation.parse(fileData, fileName, fileExt, labelMap);
-            console.log("parsed", f, annotationsToAdd);
+            // console.log("parsed", f, annotationsToAdd);
             for (var a of annotationsToAdd) {
                 annotations.push(a.annotation);
             }
