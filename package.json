@@ -1,14 +1,14 @@
 {
-  "name": "roboflow",
+  "name": "roboflow-cli",
   "version": "0.0.14",
-  "description": "Roboflow.ai node module and CLI tools",
+  "description": "Roboflow.com CLI tool",
   "main": "index.js",
   "scripts": {
     "test": "jest"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/roboflow-ai/roboflow-node.git"
+    "url": "git+https://github.com/roboflow-ai/roboflow-cli.git"
   },
   "bin": {
     "roboflow": "./cli/index.js"
@@ -41,7 +41,7 @@
   "author": "Roboflow",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/roboflow-ai/roboflow-node/issues"
+    "url": "https://github.com/roboflow-ai/roboflow-cli/issues"
   },
-  "homepage": "https://github.com/roboflow-ai/roboflow-node#readme"
+  "homepage": "https://github.com/roboflow-ai/roboflow-cli#readme"
 }
