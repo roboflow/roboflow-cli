@@ -68,6 +68,32 @@ async function uploadImage(filepath, projectUrl, apiKey, options) {
     }
 }
 
+async function uploadAnnotationRaw(imageID, annotationName, annotationData, projectUrl, apiKey) {
+    // console.log("uploadAnnotationRaw", imageID, annotationName, annotationData, projectUrl, apiKey);
+
+    try {
+        const response = await axios({
+            method: "POST",
+            url: `${config.get("RF_API_URL")}/dataset/${projectUrl}/annotate/${imageID}`,
+            params: {
+                api_key: apiKey,
+                name: annotationName
+            },
+            data: annotationData,
+            headers: {
+                "Content-Type": "text/plain"
+            }
+        });
+
+        return response.data;
+    } catch (e) {
+        if (e.response) {
+            return e.response.data;
+        }
+        throw e;
+    }
+}
+
 async function uploadAnnotation(imageID, annotationFile, projectUrl, apiKey) {
     const filename = path.basename(annotationFile);
     const annotationData = fs.readFileSync(annotationFile, "utf-8");
@@ -186,5 +212,6 @@ module.exports = api = {
     detectObject,
     classify,
     instanceSegmentation,
-    semanticSegmentation
+    semanticSegmentation,
+    uploadAnnotationRaw
 };
