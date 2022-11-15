@@ -103,7 +103,7 @@ async function uploadParsedDatasetImage(
     datasetFolder
 ) {
     const annot = new annotation(imageInfo.annotation, null, annotationGroup, datasetFolder);
-    vocAnnotation = annot.toVOC();
+    const vocAnnotation = annot.toVOC();
 
     // console.log("annotation name: ", imageInfo.file, vocAnnotation.name);
 
