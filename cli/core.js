@@ -73,6 +73,18 @@ async function selectProjectFromWorkspace(workspaceUrl) {
     const workspaceData = await getWorkspace(workspaceUrl, apiKey);
     const projects = workspaceData.workspace?.projects;
 
+    if (!projects || projects.length == 0) {
+        console.log(
+            chalk.red("No projects found in this workspace. You may need to create one first")
+        );
+        console.log(
+            "You can create a project in this workspace here: https://app.roboflow.com/" +
+                workspaceUrl
+        );
+        process.exit(1);
+        return;
+    }
+
     const choices = projects.map((project) => {
         return {
             name: `${chalk.bold(project.name)}  (${project.id})`,
