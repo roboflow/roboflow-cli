@@ -52,3 +52,32 @@ or
 ```
 roboflow detect -h
 ```
+
+### Run the CLI in a docker container (alpha support)
+
+If you don't want to install node, npm and other roboflow cli dependencies, but still use the roboflow cli you can run it in a docker container.
+
+Assuming you have docker installed on your machine, first build the image
+
+```
+docker build -t roboflowcli .
+```
+
+Then, run the roboflow cli docker image interactively like so
+
+
+
+```
+# Authorize 
+
+docker run -it -v ~/.config/roboflow:/root/.config/roboflow roboflowcli:2 roboflow auth
+
+# Use the CLI as usual inside a docker container.
+
+docker run -it -v ~/.config/roboflow:/root/.config/roboflow roboflowcli:2 roboflow project list
+```
+
+Here we have mounted the roboflow credentials into the docker container. The first docker command authorizes the user and stores credentials 
+in the user's `$HOME/.config/roboflow` directory. These credentials are then mounted onto the docker container in subsequent runs, as shown above.
+
+You will similarly have to mount any data directories in case you are uploading images or annotations, for example.
