@@ -60,7 +60,7 @@ If you don't want to install node, npm and other roboflow cli dependencies, but 
 Assuming you have docker installed on your machine, first build the image
 
 ```
-docker build -t roboflowcli .
+docker build -t roboflowcli:latest .
 ```
 
 Then, run the roboflow cli docker image interactively like so
@@ -70,11 +70,11 @@ Then, run the roboflow cli docker image interactively like so
 ```
 # Authorize 
 
-docker run -it -v ~/.config/roboflow:/root/.config/roboflow roboflowcli:2 roboflow auth
+docker run -it -v ~/.config/roboflow:/root/.config/roboflow roboflowcli:latest roboflow auth
 
 # Use the CLI as usual inside a docker container.
 
-docker run -it -v ~/.config/roboflow:/root/.config/roboflow roboflowcli:2 roboflow project list
+docker run -it -v ~/.config/roboflow:/root/.config/roboflow roboflowcli:latest roboflow project list
 ```
 
 Here we have mounted the roboflow credentials into the docker container. The first docker command authorizes the user and stores credentials 
