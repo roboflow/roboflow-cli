@@ -4,7 +4,7 @@ const pLimit = require("p-limit");
 
 const annotation = require("@roboflow/annotation");
 
-const { selectProjectFromWorkspace, getApiKeyWorWorkspace } = require("../core.js");
+const { selectProjectFromWorkspace, getApiKeyForWorkspace } = require("../core.js");
 
 const { parseFolder } = require("../datasetParser");
 
@@ -44,7 +44,7 @@ async function uploadSimple(f, projectUrl, apiKey, extraOption) {
 
 async function uploadImage(args, options) {
     const workspaceUrl = options.workspace;
-    const apiKey = getApiKeyWorWorkspace(workspaceUrl);
+    const apiKey = getApiKeyForWorkspace(workspaceUrl);
     let projectUrl = options.project;
 
     if (!projectUrl) {
@@ -129,7 +129,7 @@ async function uploadParsedDatasetImage(
 
 async function importDataset(datasetFolder, options) {
     const workspaceUrl = options.workspace;
-    const apiKey = getApiKeyWorWorkspace(workspaceUrl);
+    const apiKey = getApiKeyForWorkspace(workspaceUrl);
     let projectUrl = options.project;
 
     if (!projectUrl) {

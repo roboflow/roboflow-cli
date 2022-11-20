@@ -4,7 +4,25 @@ const config = require("../config.js");
 
 const { getWorkspace } = require("../api.js");
 
-function getApiKeyWorWorkspace(workspaceId) {
+function hasApiKeyForWorkspace(workspaceId) {
+    const workspaces = config.get("workspaces");
+
+    if (!workspaces) {
+        return false;
+    }
+
+    const workspaceConf = Object.values(workspaces).find(
+        (ws) => ws.url == workspaceId || ws.id == workspaceId
+    );
+
+    if (workspaceConf && workspaceConf.apiKey) {
+        return true;
+    }
+
+    return false;
+}
+
+function getApiKeyForWorkspace(workspaceId) {
     const workspaces = config.get("workspaces");
 
     if (!workspaces) {
@@ -41,7 +59,7 @@ async function selectWorkspace() {
 
     if (Object.keys(workspaces).length == 1) {
         console.log(
-            "nothign to select from, only 1 default workspace authorized:",
+            "Nothing to select from, only 1 default workspace authorized:",
             chalk.green(Object.values(workspaces)[0].url)
         );
         return Object.values(workspaces)[0].url;
@@ -69,7 +87,7 @@ async function selectWorkspace() {
 }
 
 async function selectProjectFromWorkspace(workspaceUrl) {
-    const apiKey = getApiKeyWorWorkspace(workspaceUrl);
+    const apiKey = getApiKeyForWorkspace(workspaceUrl);
     const workspaceData = await getWorkspace(workspaceUrl, apiKey);
     const projects = workspaceData.workspace?.projects;
 
@@ -109,7 +127,8 @@ async function selectProjectFromWorkspace(workspaceUrl) {
 }
 
 module.exports = {
-    getApiKeyWorWorkspace,
+    hasApiKeyForWorkspace,
+    getApiKeyForWorkspace,
     selectWorkspace,
     selectProjectFromWorkspace
 };
