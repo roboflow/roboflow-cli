@@ -70,11 +70,11 @@ Then, run the roboflow cli docker image interactively like so
 ```
 # Authorize 
 
-docker run -it -v ~/.config/roboflow:/root/.config/roboflow roboflowcli:latest roboflow auth
+docker run -it -v ~/.config/roboflow:/root/.config/roboflow roboflowcli:latest auth
 
 # Use the CLI as usual inside a docker container.
 
-docker run -it -v ~/.config/roboflow:/root/.config/roboflow roboflowcli:latest roboflow project list
+docker run -it -v ~/.config/roboflow:/root/.config/roboflow roboflowcli:latest project list
 ```
 
 Here we have mounted the roboflow credentials into the docker container. The first docker command authorizes the user and stores credentials 
