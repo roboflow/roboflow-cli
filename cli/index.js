@@ -9,6 +9,7 @@ const workspaceCommands = require("./commands/workspace.js");
 const projectCommands = require("./commands/project.js");
 const upload = require("./commands/upload.js");
 const open = require("./commands/open.js");
+const download = require("./commands/download.js");
 
 const inference = require("./commands/inference.js");
 
@@ -152,6 +153,34 @@ async function main() {
         .argument("<folder>", "filesystem path to a folder that contains your dataset")
 
         .action(upload.importDataset);
+
+    program
+        .command("download")
+        .description("download a dataset version from a your workspace or roboflow universe")
+        .option(
+            "-w --workspace [workspace]",
+            "specify a workspace url or id (will use default workspace if not specified)",
+            defaultWorkspace
+        )
+        .addOption(
+            new Option(
+                "-f --format [format]",
+                "specify the format to download the version in "
+            ).choices([
+                "coco",
+                "yolov5pytorch",
+                "yolov7pytorch",
+                "my-yolov6",
+                "darknet",
+                "voc",
+                "tfrecord",
+                "createml"
+            ])
+        )
+
+        .argument("<datasetUrl>", "dataset url (e.g.: `roboflow-100/cells-uyemf/2`)")
+
+        .action(download.downloadDataset);
 
     program
         .command("infer")
