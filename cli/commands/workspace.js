@@ -3,7 +3,7 @@ const chalk = require("chalk");
 const { link } = require("../utils");
 
 const { getWorkspace } = require("../../api.js");
-const { getApiKeyWorWorkspace, selectWorkspace } = require("../core.js");
+const { getApiKeyForWorkspace, selectWorkspace } = require("../core.js");
 
 require("util").inspect.defaultOptions.depth = null;
 
@@ -54,7 +54,7 @@ async function listWorkspaces() {
 
 async function workspaceDetails(options) {
     const workspaceUrl = options.workspace;
-    const apiKey = getApiKeyWorWorkspace(workspaceUrl);
+    const apiKey = getApiKeyForWorkspace(workspaceUrl);
 
     const workspaceData = await getWorkspace(workspaceUrl, apiKey);
     console.log(workspaceData);
