@@ -3,7 +3,7 @@ const { link } = require("../utils");
 const config = require("../../config");
 
 const { getWorkspace, getProject } = require("../../api.js");
-const { getApiKeyWorWorkspace } = require("../core.js");
+const { hasApiKeyForWorkspace, getApiKeyForWorkspace } = require("../core.js");
 
 function printProject(p) {
     const app_url = config.get("RF_APP_URL");
@@ -22,7 +22,7 @@ function printProject(p) {
 
 async function listProjects(options) {
     const workspaceUrl = options.workspace;
-    const apiKey = getApiKeyWorWorkspace(workspaceUrl);
+    const apiKey = getApiKeyForWorkspace(workspaceUrl);
 
     const workspaceData = await getWorkspace(workspaceUrl, apiKey);
 
@@ -45,9 +45,14 @@ async function projectDetails(projectId, options) {
         [workspaceUrl, projectUrl] = projectId.split("/");
     }
 
-    console.log(workspaceUrl, projectUrl);
-
-    const apiKey = getApiKeyWorWorkspace(workspaceUrl);
+    let apiKey;
+    if (hasApiKeyForWorkspace(workspaceUrl)) {
+        apiKey = getApiKeyForWorkspace(workspaceUrl);
+    } else {
+        //fallback to default workspace or the one sepcified via --workspace if the one in
+        // the project id is not one we have an api key for (e.g. for public projects on universe)
+        apiKey = getApiKeyForWorkspace(options.workspace);
+    }
 
     const result = await getProject(workspaceUrl, projectUrl, apiKey);
     console.log(result);

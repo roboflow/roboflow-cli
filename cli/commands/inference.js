@@ -3,11 +3,11 @@ const axios = require("axios");
 const fs = require("fs");
 
 const api = require("../../api.js");
-const { getApiKeyWorWorkspace } = require("../core.js");
+const { getApiKeyForWorkspace } = require("../core.js");
 
 async function infer(args, options) {
     const workspaceUrl = options.workspace;
-    const apiKey = getApiKeyWorWorkspace(workspaceUrl);
+    const apiKey = getApiKeyForWorkspace(workspaceUrl);
 
     // console.log("infer", args, options);
 
@@ -49,7 +49,7 @@ async function infer(args, options) {
 
 async function detectObject(args, options) {
     const workspaceUrl = options.workspace;
-    const apiKey = getApiKeyWorWorkspace(workspaceUrl);
+    const apiKey = getApiKeyForWorkspace(workspaceUrl);
 
     const modelUrl = options.model;
     const file = args;
@@ -63,7 +63,7 @@ async function detectObject(args, options) {
 
 async function classify(args, options) {
     const workspaceUrl = options.workspace;
-    const apiKey = getApiKeyWorWorkspace(workspaceUrl);
+    const apiKey = getApiKeyForWorkspace(workspaceUrl);
 
     const modelUrl = options.model;
     const file = args;
@@ -74,7 +74,7 @@ async function classify(args, options) {
 
 async function instanceSegmentation(args, options) {
     const workspaceUrl = options.workspace;
-    const apiKey = getApiKeyWorWorkspace(workspaceUrl);
+    const apiKey = getApiKeyForWorkspace(workspaceUrl);
 
     const modelUrl = options.model;
     const file = args;
@@ -85,7 +85,7 @@ async function instanceSegmentation(args, options) {
 
 async function semanticSegmentation(args, options) {
     const workspaceUrl = options.workspace;
-    const apiKey = getApiKeyWorWorkspace(workspaceUrl);
+    const apiKey = getApiKeyForWorkspace(workspaceUrl);
 
     const modelUrl = options.model;
     const file = args;
