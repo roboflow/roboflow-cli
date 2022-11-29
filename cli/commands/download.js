@@ -1,5 +1,8 @@
 const fs = require("fs");
 const path = require("path");
+const axios = require("axios");
+
+var ProgressBar = require("progress");
 
 const { hasApiKeyForWorkspace, getApiKeyForWorkspace } = require("../core.js");
 
@@ -108,6 +111,31 @@ async function getDownloadLink(
     return formatResponse.export;
 }
 
+async function downloadFileWithProgressBar(downloadUrl, outputFile) {
+    console.log("Connecting …");
+    const { data, headers } = await axios({
+        url: downloadUrl,
+        method: "GET",
+        responseType: "stream"
+    });
+    const totalLength = headers["content-length"];
+
+    console.log("Starting download");
+    const progressBar = new ProgressBar("-> downloading [:bar] :percent :etas", {
+        width: 40,
+        complete: "=",
+        incomplete: " ",
+        renderThrottle: 1,
+        total: parseInt(totalLength)
+    });
+
+    console.log("writing dataset to file:", outputFile);
+    const writer = fs.createWriteStream(outputFile);
+
+    data.on("data", (chunk) => progressBar.tick(chunk.length));
+    data.pipe(writer);
+}
+
 async function downloadDataset(datasetUrl, options) {
     let workspaceUrl = options.workspace;
     let projectUrl = datasetUrl;
@@ -155,7 +183,9 @@ async function downloadDataset(datasetUrl, options) {
         apiKey
     );
 
-    console.log("DOWNLOAD URL: ", downloadLink);
+    const outputFile =
+        options.outputFile || `${workspaceUrl}-${projectUrl}-${version}-${options.format}.zip`;
+    await downloadFileWithProgressBar(downloadLink, outputFile);
 }
 
 module.exports = {
