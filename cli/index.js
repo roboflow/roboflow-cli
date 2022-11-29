@@ -162,20 +162,23 @@ async function main() {
             "specify a workspace url or id (will use default workspace if not specified)",
             defaultWorkspace
         )
+        .option(
+            "-v --version [version]",
+            "specify a dataset version to download (will override the version specified in the datasetUrl if specified)"
+        )
         .addOption(
-            new Option(
-                "-f --format [format]",
-                "specify the format to download the version in "
-            ).choices([
-                "coco",
-                "yolov5pytorch",
-                "yolov7pytorch",
-                "my-yolov6",
-                "darknet",
-                "voc",
-                "tfrecord",
-                "createml"
-            ])
+            new Option("-f --format [format]", "specify the format to download the version in ")
+                .choices([
+                    "coco",
+                    "yolov5pytorch",
+                    "yolov7pytorch",
+                    "my-yolov6",
+                    "darknet",
+                    "voc",
+                    "tfrecord",
+                    "createml"
+                ])
+                .default("voc")
         )
 
         .argument("<datasetUrl>", "dataset url (e.g.: `roboflow-100/cells-uyemf/2`)")
