@@ -159,8 +159,8 @@ async function selectClassificationFormat() {
         message: `Select a format to export this classification dataset to:`,
         choices: [
             { name: "'clip' (OpenAI CLIP Structure)", value: "clip" },
-            { name: "'multiclass' (Multi Label Classification CSV)", value: "multiclass" },
-            { name: "'folder' (Folder Structure)", value: "folder" }
+            { name: "'multiclass' (Multi Label Classification CSV)", value: "multiclass" }
+            // { name: "'folder' (Folder Structure)", value: "folder" } // not supported via API yet
         ],
 
         result(choice) {
@@ -185,7 +185,7 @@ async function selectInstanceSegFormat() {
                 name: "'multiclass' (Converts to Classification: Multi Label Classification CSV, )",
                 value: "multiclass"
             },
-            { name: "'clip' (Converts to Classification: OpenAI CLIP)", value: "folder" },
+            { name: "'clip' (Converts to Classification: OpenAI CLIP)", value: "clip" },
             { name: "'coco' (Converts to Object-Detection: COCO)", value: "coco" },
             {
                 name: "'yolov5pytorch' (Converts to Object-Detection: YOLOv5 PyTorch)",

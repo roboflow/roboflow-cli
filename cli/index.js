@@ -180,7 +180,7 @@ async function main() {
                 "tfrecord",
                 "createml",
                 "clip",
-                "folder",
+                // "folder", //not supported via API yet
                 "multiclass",
                 "coco-segmentation",
                 "yolo5-obb",

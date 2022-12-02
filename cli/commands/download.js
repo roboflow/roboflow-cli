@@ -146,7 +146,7 @@ function verifyFormatTypeForProject(format, projectData) {
                 throw new Error(`format ${format} is not supported for Object-Detection datasets`);
             }
         } else if (datasetType == "classification") {
-            if (["clip", "multiclass", "folder"].includes(format)) {
+            if (["clip", "multiclass"].includes(format)) {
                 return format;
             } else {
                 throw new Error(`format ${format} is not supported for Classification datasets`);
