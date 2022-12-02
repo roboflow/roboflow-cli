@@ -167,18 +167,25 @@ async function main() {
             "specify a dataset version to download (will override the version specified in the datasetUrl if specified)"
         )
         .addOption(
-            new Option("-f --format [format]", "specify the format to download the version in ")
-                .choices([
-                    "coco",
-                    "yolov5pytorch",
-                    "yolov7pytorch",
-                    "my-yolov6",
-                    "darknet",
-                    "voc",
-                    "tfrecord",
-                    "createml"
-                ])
-                .default("voc")
+            new Option(
+                "-f --format [format]",
+                "Specify the format to download the version in.  The supported format depends on the dataset type; if you don't pass a specific format, you will get an interactive prompt to pick a format supported for the dataset type."
+            ).choices([
+                "coco",
+                "yolov5pytorch",
+                "yolov7pytorch",
+                "my-yolov6",
+                "darknet",
+                "voc",
+                "tfrecord",
+                "createml",
+                "clip",
+                "folder",
+                "multiclass",
+                "coco-segmentation",
+                "yolo5-obb",
+                "png-mask-semantic"
+            ])
         )
 
         .argument("<datasetUrl>", "dataset url (e.g.: `roboflow-100/cells-uyemf/2`)")

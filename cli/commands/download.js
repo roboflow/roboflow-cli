@@ -4,7 +4,7 @@ const axios = require("axios");
 
 var ProgressBar = require("progress");
 
-const { hasApiKeyForWorkspace, getApiKeyForWorkspace } = require("../core.js");
+const { hasApiKeyForWorkspace, getApiKeyForWorkspace, selectExportFormat } = require("../core.js");
 
 const api = require("../../api.js");
 
@@ -42,8 +42,8 @@ async function getProjectVersions(workspaceUrl, projectUrl, apiKey) {
     return project.versions || [];
 }
 
-async function getLatestVersion(workspaceUrl, projectUrl, apiKey) {
-    const availableVersions = await getProjectVersions(workspaceUrl, projectUrl, apiKey);
+async function getLatestVersion(projectData) {
+    const availableVersions = projectData.versions || [];
     availableVersions.sort((a, b) => a.created - b.created);
 
     if (availableVersions.length > 0) {
@@ -56,11 +56,11 @@ async function getLatestVersion(workspaceUrl, projectUrl, apiKey) {
     return null;
 }
 
-async function verifyVersionExists(workspaceUrl, projectUrl, version, apiKey) {
-    const availableVersions = await getProjectVersions(workspaceUrl, projectUrl, apiKey);
+async function verifyVersionExists(projectData, version) {
+    const availableVersions = projectData.versions;
     const versionExists = availableVersions.find((v) => v.id.endsWith(`/${version}`));
     if (!versionExists) {
-        throw new Error(`version ${version} does not exist for dataset ${projectUrl}`);
+        throw new Error(`version ${version} does not exist for dataset ${projectData.id}`);
     }
 }
 
@@ -109,6 +109,84 @@ async function getDownloadLink(
     console.log("formatResponse", formatResponse);
 
     return formatResponse.export;
+}
+
+async function pickFormatInteractively(projectData) {
+    try {
+        const datasetType = projectData.project.type;
+        return selectExportFormat(datasetType);
+    } catch (e) {
+        throw new Error(`Error checking project type to determine supported formats`);
+    }
+}
+
+function verifyFormatTypeForProject(format, projectData) {
+    if (!format) {
+        return null;
+    }
+    try {
+        const datasetType = projectData.project.type;
+        if (datasetType == "object-detection") {
+            if (
+                [
+                    "coco",
+                    "yolov5pytorch",
+                    "yolov7pytorch",
+                    "my-yolov6",
+                    "darknet",
+                    "voc",
+                    "tfrecord",
+                    "createml",
+                    "clip",
+                    "multiclass"
+                ].includes(format)
+            ) {
+                return format;
+            } else {
+                throw new Error(`format ${format} is not supported for Object-Detection datasets`);
+            }
+        } else if (datasetType == "classification") {
+            if (["clip", "multiclass", "folder"].includes(format)) {
+                return format;
+            } else {
+                throw new Error(`format ${format} is not supported for Classification datasets`);
+            }
+        } else if (datasetType == "instance-segmentation") {
+            if (
+                [
+                    "coco-segmentation",
+                    "yolo5-obb",
+                    "clip",
+                    "multiclass",
+                    "coco",
+                    "yolov5pytorch",
+                    "yolov7pytorch",
+                    "my-yolov6",
+                    "darknet",
+                    "voc",
+                    "tfrecord",
+                    "createml"
+                ].includes(format)
+            ) {
+                return format;
+            } else {
+                throw new Error(
+                    `format ${format} is not supported for Instance Segmentation datasets`
+                );
+            }
+        } else if (datasetType == "semantic-segmentation") {
+            if (["coco-segmentation", "png-mask-semantic"].includes(format)) {
+                return format;
+            } else {
+                throw new Error(
+                    `format ${format} is not supported for Semantic Segmentation datasets`
+                );
+            }
+        }
+    } catch (e) {
+        console.error(e.message);
+        return null;
+    }
 }
 
 async function downloadFileWithProgressBar(downloadUrl, outputFile) {
@@ -163,11 +241,23 @@ async function downloadDataset(datasetUrl, options) {
         version = parsedDatasetUrl.version;
     }
 
+    // console.log("DOWNLOADING DATASET", parsedDatasetUrl);
+
+    // fetch project data to ensure the requested version exists and so we can check the format is supported for the right dataset type
+    let projectData;
+    try {
+        projectData = await api.getProject(workspaceUrl, projectUrl, apiKey);
+    } catch (e) {
+        throw new Error(`can't find or access project:  ${workspaceUrl}/${projectUrl}`);
+    }
+
+    // console.log("got project data", projectData);
+
     if (version) {
-        await verifyVersionExists(workspaceUrl, projectUrl, version, apiKey);
+        await verifyVersionExists(projectData, version);
     } else {
         // if still no version, get the latest version available
-        const latestVersion = await getLatestVersion(workspaceUrl, projectUrl, apiKey);
+        const latestVersion = await getLatestVersion(projectData);
         if (latestVersion) {
             version = latestVersion;
         } else {
@@ -175,13 +265,14 @@ async function downloadDataset(datasetUrl, options) {
         }
     }
 
-    const downloadLink = await getDownloadLink(
-        workspaceUrl,
-        projectUrl,
-        version,
-        options.format,
-        apiKey
-    );
+    let format = verifyFormatTypeForProject(options.format, projectData);
+    if (!format) {
+        format = await pickFormatInteractively(projectData);
+    }
+
+    // console.log("DOWNALOD DATASET:", workspaceUrl, projectUrl, version, format, apiKey);
+
+    const downloadLink = await getDownloadLink(workspaceUrl, projectUrl, version, format, apiKey);
 
     const outputFile =
         options.outputFile || `${workspaceUrl}-${projectUrl}-${version}-${options.format}.zip`;
