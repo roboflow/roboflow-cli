@@ -73,51 +73,51 @@ async function verifyVersionExists(projectData, version) {
     }
 }
 
-async function getDownloadLink(
-    workspaceUrl,
-    projectUrl,
-    version,
-    format,
-    apiKey,
-    recurseDepth = 0
-) {
-    if (recurseDepth > 12) {
-        throw new Error(
-            "Too many retries.  Version export in the requested format is not ready for download yet.  Try again later."
-        );
-    }
-
+async function getDownloadLink(workspaceUrl, projectUrl, version, format, apiKey) {
     const formatResponse = await api.getFormat(workspaceUrl, projectUrl, version, format, apiKey);
 
-    const progress = parseInt(formatResponse.progress);
+    const progress = parseFloat(formatResponse.progress);
 
     if (progress >= 1) {
         return formatResponse.export && formatResponse.export.link;
     } else if (progress >= 0 && progress < 1) {
-        // not ready yet, try again in a few seconds
-        console.log(
-            "server is generating downloadable version, but it's not ready for download yet, trying again in 5 seconds..."
-        );
+        // not ready yet, show progress abr and try again until generated
+        const progressBar = new ProgressBar("  generating version [:bar] :percent :etas", {
+            width: 40,
+            complete: "=",
+            incomplete: " ",
+            renderThrottle: 1,
+            total: 100
+        });
+
+        async function updateProgress(resolveFn) {
+            const formatResponse = await api.getFormat(
+                workspaceUrl,
+                projectUrl,
+                version,
+                format,
+                apiKey
+            );
+            const progress = parseFloat(formatResponse.progress);
+            progressBar.update(progress);
+
+            if (progress >= 1) {
+                resolveFn(formatResponse.export && formatResponse.export.link);
+            } else {
+                setTimeout(() => {
+                    updateProgress(resolveFn);
+                }, 1000);
+            }
+        }
+
         return new Promise((resolve, reject) => {
-            setTimeout(async () => {
-                const link = await getDownloadLink(
-                    workspaceUrl,
-                    projectUrl,
-                    version,
-                    format,
-                    apiKey,
-                    recurseDepth + 1
-                );
-                resolve(link);
-            }, 5000);
+            setTimeout(() => {
+                updateProgress(resolve);
+            }, 1000);
         });
     } else {
         throw new Error(`invalid response getting download url`);
     }
-
-    console.log("formatResponse", formatResponse);
-
-    return formatResponse.export;
 }
 
 async function pickFormatInteractively(projectData) {
@@ -199,15 +199,13 @@ function verifyFormatTypeForProject(format, projectData) {
 }
 
 async function downloadFileWithProgressBar(downloadUrl, outputFile) {
-    console.log("Connecting …");
+    console.log("Starting download...");
     const { data, headers } = await axios({
         url: downloadUrl,
         method: "GET",
         responseType: "stream"
     });
     const totalLength = headers["content-length"];
-
-    console.log("Starting download");
 
     return new Promise((resolve, reject) => {
         const writer = fs.createWriteStream(outputFile);
@@ -325,7 +323,6 @@ async function downloadDataset(datasetUrl, options) {
     const outputFolder = generateOutputFolderName(workspaceUrl, projectUrl, version, format);
 
     await downloadAndUnzip(downloadLink, outputFolder);
-
 }
 
 module.exports = {
