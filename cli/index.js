@@ -233,6 +233,9 @@ async function main() {
         await program.parseAsync();
     } catch (e) {
         console.error(e.message);
+        if (e.response) {
+            console.error(e.response.data);
+        }
         if (global.debug) {
             console.log("[debug]", e);
         }
