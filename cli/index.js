@@ -156,7 +156,9 @@ async function main() {
 
     program
         .command("download")
-        .description("download a dataset version from a your workspace or roboflow universe")
+        .description(
+            "download a dataset version from a your workspace or roboflow universe.  The dataset will be downloaded to the current working directory."
+        )
         .option(
             "-w --workspace [workspace]",
             "specify a workspace url or id (will use default workspace if not specified)",

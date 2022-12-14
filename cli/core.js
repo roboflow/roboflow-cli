@@ -4,6 +4,12 @@ const config = require("../config.js");
 
 const { getWorkspace } = require("../api.js");
 
+function debug_log(message) {
+    if (global.debug) {
+        console.debug(message);
+    }
+}
+
 function hasApiKeyForWorkspace(workspaceId) {
     const workspaces = config.get("workspaces");
 
@@ -256,6 +262,7 @@ function selectExportFormat(datasetType) {
 }
 
 module.exports = {
+    debug_log,
     hasApiKeyForWorkspace,
     getApiKeyForWorkspace,
     selectWorkspace,

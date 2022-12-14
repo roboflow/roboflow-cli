@@ -1,10 +1,19 @@
 const fs = require("fs");
 const path = require("path");
 const axios = require("axios");
+const chalk = require("chalk");
 
 var ProgressBar = require("progress");
+// const decompress = require("decompress");
+const extract = require("progress-extract");
+const tempfile = require("tempfile");
 
-const { hasApiKeyForWorkspace, getApiKeyForWorkspace, selectExportFormat } = require("../core.js");
+const {
+    hasApiKeyForWorkspace,
+    getApiKeyForWorkspace,
+    selectExportFormat,
+    debug_log
+} = require("../core.js");
 
 const api = require("../../api.js");
 
@@ -199,19 +208,58 @@ async function downloadFileWithProgressBar(downloadUrl, outputFile) {
     const totalLength = headers["content-length"];
 
     console.log("Starting download");
-    const progressBar = new ProgressBar("-> downloading [:bar] :percent :etas", {
-        width: 40,
-        complete: "=",
-        incomplete: " ",
-        renderThrottle: 1,
-        total: parseInt(totalLength)
+
+    return new Promise((resolve, reject) => {
+        const writer = fs.createWriteStream(outputFile);
+        data.pipe(writer);
+
+        const progressBar = new ProgressBar("  downloading [:bar] :percent :etas", {
+            width: 40,
+            complete: "=",
+            incomplete: " ",
+            renderThrottle: 1,
+            total: parseInt(totalLength)
+        });
+
+        data.on("data", (chunk) => progressBar.tick(chunk.length));
+
+        writer.on("error", () => {
+            reject();
+        });
+        writer.on("finish", () => {
+            resolve();
+        });
     });
+}
 
-    console.log("writing dataset to file:", outputFile);
-    const writer = fs.createWriteStream(outputFile);
+function generateOutputFolderName(workspaceUrl, projectUrl, version, format) {
+    let count = 0;
 
-    data.on("data", (chunk) => progressBar.tick(chunk.length));
-    data.pipe(writer);
+    let filename = `./${workspaceUrl}-${projectUrl}-${version}-${format}`;
+    while (fs.existsSync(filename)) {
+        count++;
+        filename = `./${workspaceUrl}-${projectUrl}-${version}-${format}_${count}`;
+    }
+
+    return filename;
+}
+
+async function unzipDownloadedFile(outputFile, outputFolder) {
+    return extract(outputFile, path.resolve(outputFolder));
+}
+
+async function downloadAndUnzip(downloadLink, outputFolder) {
+    const outputFile = tempfile(".zip");
+
+    await downloadFileWithProgressBar(downloadLink, outputFile);
+
+    debug_log(`unzipping file: ${outputFile} to: ${outputFolder}`);
+    await unzipDownloadedFile(outputFile, outputFolder);
+
+    debug_log(`deleting temp file ${outputFile}`);
+    fs.unlinkSync(outputFile);
+
+    console.log("downloaded dataset to: " + chalk.bold(outputFolder));
 }
 
 async function downloadDataset(datasetUrl, options) {
@@ -274,9 +322,10 @@ async function downloadDataset(datasetUrl, options) {
 
     const downloadLink = await getDownloadLink(workspaceUrl, projectUrl, version, format, apiKey);
 
-    const outputFile =
-        options.outputFile || `${workspaceUrl}-${projectUrl}-${version}-${options.format}.zip`;
-    await downloadFileWithProgressBar(downloadLink, outputFile);
+    const outputFolder = generateOutputFolderName(workspaceUrl, projectUrl, version, format);
+
+    await downloadAndUnzip(downloadLink, outputFolder);
+
 }
 
 module.exports = {
