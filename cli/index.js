@@ -9,6 +9,7 @@ const workspaceCommands = require("./commands/workspace.js");
 const projectCommands = require("./commands/project.js");
 const upload = require("./commands/upload.js");
 const open = require("./commands/open.js");
+const download = require("./commands/download.js");
 
 const inference = require("./commands/inference.js");
 
@@ -154,6 +155,46 @@ async function main() {
         .action(upload.importDataset);
 
     program
+        .command("download")
+        .description(
+            "download a dataset version from a your workspace or roboflow universe.  The dataset will be downloaded to the current working directory."
+        )
+        .option(
+            "-w --workspace [workspace]",
+            "specify a workspace url or id (will use default workspace if not specified)",
+            defaultWorkspace
+        )
+        .option(
+            "-v --version [version]",
+            "specify a dataset version to download (will override the version specified in the datasetUrl if specified)"
+        )
+        .addOption(
+            new Option(
+                "-f --format [format]",
+                "Specify the format to download the version in.  The supported format depends on the dataset type; if you don't pass a specific format, you will get an interactive prompt to pick a format supported for the dataset type."
+            ).choices([
+                "coco",
+                "yolov5pytorch",
+                "yolov7pytorch",
+                "my-yolov6",
+                "darknet",
+                "voc",
+                "tfrecord",
+                "createml",
+                "clip",
+                // "folder", //not supported via API yet
+                "multiclass",
+                "coco-segmentation",
+                "yolo5-obb",
+                "png-mask-semantic"
+            ])
+        )
+
+        .argument("<datasetUrl>", "dataset url (e.g.: `roboflow-100/cells-uyemf/2`)")
+
+        .action(download.downloadDataset);
+
+    program
         .command("infer")
         .description("perform object detection inference on an image")
         .requiredOption(
@@ -192,6 +233,9 @@ async function main() {
         await program.parseAsync();
     } catch (e) {
         console.error(e.message);
+        if (e.response) {
+            console.error(e.response.data);
+        }
         if (global.debug) {
             console.log("[debug]", e);
         }

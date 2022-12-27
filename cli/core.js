@@ -4,6 +4,12 @@ const config = require("../config.js");
 
 const { getWorkspace } = require("../api.js");
 
+function debug_log(message) {
+    if (global.debug) {
+        console.debug(message);
+    }
+}
+
 function hasApiKeyForWorkspace(workspaceId) {
     const workspaces = config.get("workspaces");
 
@@ -126,9 +132,140 @@ async function selectProjectFromWorkspace(workspaceUrl) {
     return answer;
 }
 
+async function selectObjectDetectionFormat() {
+    const prompt = new enquirer.Select({
+        name: "Select dataset format:",
+        message: `Select a format to export this object detection dataset to:`,
+        choices: [
+            { name: "'coco' (COCO)", value: "coco" },
+            { name: "'yolov5pytorch' (YOLOv5 PyTorch)", value: "yolov5pytorch" },
+            { name: "'yolov7pytorch' (YOLOv7 PyTorch)", value: "yolov7pytorch" },
+            { name: "'my-yolov6' (meituan/YOLOv6)", value: "my-yolov6" },
+            { name: "'darknet' (YOLO Darknet)", value: "darknet" },
+            { name: "'voc' (Pascal VOC)", value: "voc" },
+            { name: "'tfrecrod' (Tensorflow TFRecord)", value: "tfrecrod" },
+            { name: "'createml' (CreateML)", value: "createml" },
+            { name: "'clip' (OpenAI CLIP Classification)", value: "clip" },
+            { name: "'multiclass' (Multi Label Classification CSV)", value: "multiclass" }
+        ],
+
+        result(choice) {
+            return this.map(choice)[choice];
+        }
+    });
+
+    const answer = await prompt.run();
+
+    return answer;
+}
+
+async function selectClassificationFormat() {
+    const prompt = new enquirer.Select({
+        name: "Select dataset format:",
+        message: `Select a format to export this classification dataset to:`,
+        choices: [
+            { name: "'clip' (OpenAI CLIP Structure)", value: "clip" },
+            { name: "'multiclass' (Multi Label Classification CSV)", value: "multiclass" }
+            // { name: "'folder' (Folder Structure)", value: "folder" } // not supported via API yet
+        ],
+
+        result(choice) {
+            return this.map(choice)[choice];
+        }
+    });
+
+    const answer = await prompt.run();
+
+    return answer;
+}
+
+async function selectInstanceSegFormat() {
+    // ask user to select default work
+    const prompt = new enquirer.Select({
+        name: "Select dataset format:",
+        message: `Select a format to export this instance segmentation dataset to:`,
+        choices: [
+            { name: "'coco-segmentation' (Coco Segmentation)", value: "coco-segmentation" },
+            { name: "'yolo5-obb' (YOLOv5 Oriented Bounding Boxes)", value: "yolo5-obb" },
+            {
+                name: "'multiclass' (Converts to Classification: Multi Label Classification CSV, )",
+                value: "multiclass"
+            },
+            { name: "'clip' (Converts to Classification: OpenAI CLIP)", value: "clip" },
+            { name: "'coco' (Converts to Object-Detection: COCO)", value: "coco" },
+            {
+                name: "'yolov5pytorch' (Converts to Object-Detection: YOLOv5 PyTorch)",
+                value: "yolov5pytorch"
+            },
+            {
+                name: "'yolov7pytorch' (Converts to Object-Detection: YOLOv7 PyTorch)",
+                value: "yolov7pytorch"
+            },
+            {
+                name: "'my-yolov6' (Converts to Object-Detection: meituan/YOLOv6)",
+                value: "my-yolov6"
+            },
+            { name: "'darknet' (Converts to Object-Detection: YOLO Darknet)", value: "darknet" },
+            { name: "'voc' (Converts to Object-Detection: Pascal VOC)", value: "voc" },
+            {
+                name: "'tfrecrod' (Converts to Object-Detection: Tensorflow TFRecord)",
+                value: "tfrecrod"
+            },
+            { name: "'createml' (Converts to Object-Detection: CreateML)", value: "createml" }
+        ],
+
+        result(choice) {
+            return this.map(choice)[choice];
+        }
+    });
+
+    const answer = await prompt.run();
+
+    return answer;
+}
+
+async function selectSemanticSegFormat() {
+    // ask user to select default work
+    const prompt = new enquirer.Select({
+        name: "Select dataset format:",
+        message: `Select a format to export this instance segmentation dataset to:`,
+        choices: [
+            { name: "'coco-segmentation' (Coco Segmentation)", value: "coco-segmentation" },
+            {
+                name: "'png-mask-semantic' (Semantic Segmentation Masks)",
+                value: "png-mask-semantic"
+            }
+        ],
+
+        result(choice) {
+            return this.map(choice)[choice];
+        }
+    });
+
+    const answer = await prompt.run();
+
+    return answer;
+}
+
+function selectExportFormat(datasetType) {
+    if (datasetType == "object-detection") {
+        return selectObjectDetectionFormat();
+    } else if (datasetType == "classification") {
+        return selectClassificationFormat();
+    } else if (datasetType == "instance-segmentation") {
+        return selectInstanceSegFormat();
+    } else if (datasetType == "semantic-segmentation") {
+        return selectSemanticSegFormat();
+    }
+
+    throw new Error(`Error can't choose export format for unknown dataset type: ${datasetType}`);
+}
+
 module.exports = {
+    debug_log,
     hasApiKeyForWorkspace,
     getApiKeyForWorkspace,
     selectWorkspace,
-    selectProjectFromWorkspace
+    selectProjectFromWorkspace,
+    selectExportFormat
 };
