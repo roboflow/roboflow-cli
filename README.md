@@ -17,10 +17,10 @@ npm i -g roboflow-cli
 
 ### Authorize the CLI
 
-To authotize your CLI, run the following command.
+To authorize your CLI, run the following command.
 
 ```
-roboflow auth
+roboflow login
 ```
 
 This will open a browser window and have you log into roboflow where you can select any workspaces you want the CLI to store auth credentials for (The CLi will download the api keys for the workspaces and store them in a config fle in the `~/.config/roboflow` directory on your system).
@@ -41,7 +41,7 @@ For more info on how to use the CLI see the help an usage instructions by runnin
 roboflow -h
 ```
 
-You can also get specific help for each of the available sucommands, like e.g.:
+You can also get specific help for each of the available subcommands, like e.g.:
 
 ```
 roboflow upload -h

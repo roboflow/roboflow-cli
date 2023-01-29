@@ -33,7 +33,7 @@ function getApiKeyForWorkspace(workspaceId) {
 
     if (!workspaces) {
         console.log(
-            "No workspaces found. You may need to run " + chalk.bold("roboflow auth") + " first"
+            "No workspaces found. You may need to run " + chalk.bold("roboflow login") + " first"
         );
         process.exit(1);
     }
@@ -45,7 +45,7 @@ function getApiKeyForWorkspace(workspaceId) {
     if (!workspaceConf.apiKey) {
         console.log(
             "Could not find api key for the specified workspace. You may need to run " +
-                chalk.bold("roboflow auth") +
+                chalk.bold("roboflow login") +
                 " first"
         );
         process.exit(1);
@@ -59,7 +59,7 @@ async function selectWorkspace() {
 
     if (!workspaces) {
         console.log(
-            "No workspaces found. You may need to run " + chalk.bold("roboflow auth") + "first"
+            "No workspaces found. You may need to run " + chalk.bold("roboflow login") + "first"
         );
     }
 
@@ -208,8 +208,8 @@ async function selectInstanceSegFormat() {
             { name: "'darknet' (Converts to Object-Detection: YOLO Darknet)", value: "darknet" },
             { name: "'voc' (Converts to Object-Detection: Pascal VOC)", value: "voc" },
             {
-                name: "'tfrecrod' (Converts to Object-Detection: Tensorflow TFRecord)",
-                value: "tfrecrod"
+                name: "'tfrecord' (Converts to Object-Detection: Tensorflow TFRecord)",
+                value: "tfrecord"
             },
             { name: "'createml' (Converts to Object-Detection: CreateML)", value: "createml" }
         ],

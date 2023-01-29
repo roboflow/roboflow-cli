@@ -10,11 +10,11 @@ module.exports = async function auth() {
     const authUrl = `${config.get("RF_APP_URL")}/auth-cli`;
 
     try {
-        console.log("opening webrowser for you to log in and retrieve auth token...");
+        console.log("opening web browser for you to log in and retrieve auth token...");
         open(authUrl);
     } catch (e) {
         console.log();
-        console.log(chalk.red("failed to open a webrowser."));
+        console.log(chalk.red("failed to open a web browser."));
     }
 
     console.log(
@@ -33,7 +33,7 @@ ${chalk.green(authUrl)}
     const token_input = await enquirer.prompt({
         type: "text",
         name: "cli_auth_token",
-        message: "Please paste the cli auth token displayed in the webrowser"
+        message: "Please paste the cli auth token displayed in the web browser"
     });
 
     // fetch workspace info and auth data using the auth token
