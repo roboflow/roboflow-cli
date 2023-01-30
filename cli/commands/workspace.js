@@ -27,7 +27,7 @@ async function listWorkspaces() {
 
     if (!workspaces) {
         console.log(
-            "No workspaces found. You may need to run " + chalk.bold("roboflow auth") + " first"
+            "No workspaces found. You may need to run " + chalk.bold("roboflow login") + " first"
         );
         return;
     }

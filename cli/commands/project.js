@@ -49,7 +49,7 @@ async function projectDetails(projectId, options) {
     if (hasApiKeyForWorkspace(workspaceUrl)) {
         apiKey = getApiKeyForWorkspace(workspaceUrl);
     } else {
-        //fallback to default workspace or the one sepcified via --workspace if the one in
+        // fallback to default workspace or the one specified via --workspace if the one in
         // the project id is not one we have an api key for (e.g. for public projects on universe)
         apiKey = getApiKeyForWorkspace(options.workspace);
     }

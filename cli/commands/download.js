@@ -278,7 +278,7 @@ async function downloadDataset(datasetUrl, options) {
     if (hasApiKeyForWorkspace(workspaceUrl)) {
         apiKey = getApiKeyForWorkspace(workspaceUrl);
     } else {
-        //fallback to default workspace or the one sepcified via --workspace if the one in
+        // fallback to default workspace or the one specified via --workspace if the one in
         // the project id is not one we have an api key for (e.g. for public projects on universe)
         apiKey = getApiKeyForWorkspace(options.workspace);
     }
@@ -316,7 +316,7 @@ async function downloadDataset(datasetUrl, options) {
         format = await pickFormatInteractively(projectData);
     }
 
-    // console.log("DOWNALOD DATASET:", workspaceUrl, projectUrl, version, format, apiKey);
+    // console.log("DOWNLOAD DATASET:", workspaceUrl, projectUrl, version, format, apiKey);
 
     const downloadLink = await getDownloadLink(workspaceUrl, projectUrl, version, format, apiKey);
 

@@ -36,6 +36,7 @@ async function main() {
 
     program
         .command("auth")
+        .alias("login")
         .description("log in to roboflow to store auth credentials for your workspaces")
         .action(auth);
 
