@@ -8,7 +8,7 @@ const { selectProjectFromWorkspace, getApiKeyForWorkspace } = require("../core.j
 
 const { parseFolder } = require("../datasetParser");
 
-const glob = require('glob');
+const glob = require("glob");
 
 const api = require("../../api.js");
 
@@ -80,8 +80,8 @@ async function uploadImage(args, options) {
     const limit = pLimit(concurrency);
 
     // glob files if wildcard in args
-    var globbed_files = args[0].includes("*") ? await glob.sync(args[0]) : args
-    
+    var globbed_files = args[0].includes("*") ? await glob.sync(args[0]) : args;
+
     if (options.annotation) {
         for (let f of globbed_files) {
             const p = limit(() =>
