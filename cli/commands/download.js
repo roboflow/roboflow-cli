@@ -5,7 +5,7 @@ const chalk = require("chalk");
 
 var ProgressBar = require("progress");
 // const decompress = require("decompress");
-const extract = require("progress-extract");
+const extract = require("../../progress-extract");
 const tempfile = require("tempfile");
 
 const {
