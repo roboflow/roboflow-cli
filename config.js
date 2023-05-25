@@ -7,6 +7,7 @@ const config = new Conf({
 });
 
 const DEFAULTS = {
+    //Tip: export NODE_TLS_REJECT_UNAUTHORIZED=0 to bypass certificate validation when using local environment 
     RF_APP_URL: "https://app.roboflow.com",
     RF_API_URL: "https://api.roboflow.com",
     RF_OBJECT_DETECTION_URL: "https://detect.roboflow.com",
