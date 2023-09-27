@@ -9,6 +9,7 @@ const workspaceCommands = require("./commands/workspace.js");
 const projectCommands = require("./commands/project.js");
 const upload = require("./commands/upload.js");
 const open = require("./commands/open.js");
+const serve = require("./commands/serve.js");
 const download = require("./commands/download.js");
 
 const inference = require("./commands/inference.js");
@@ -227,8 +228,22 @@ async function main() {
                 "semantic-segmentation"
             ])
         )
+        .addOption(
+            new Option(
+                "-p --port [port]",
+                `specify the port to use for the inference server (default is hosted API)`
+            )
+        )
+        .addOption(
+            new Option(
+                "-a --apiKey [apiKey]",
+                `specify the api key to use for the inference server`
+            )
+        )
         .argument("<file>", "filesystem path to an image file")
         .action(inference.infer);
+
+    program.command("serve").description("TODO").action(serve);
 
     try {
         await program.parseAsync();

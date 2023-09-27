@@ -7,7 +7,7 @@ const { getApiKeyForWorkspace } = require("../core.js");
 
 async function infer(args, options) {
     const workspaceUrl = options.workspace;
-    const apiKey = getApiKeyForWorkspace(workspaceUrl);
+    const apiKey = options.apiKey ? options.apiKey : getApiKeyForWorkspace(workspaceUrl);
 
     // console.log("infer", args, options);
 
@@ -49,7 +49,7 @@ async function infer(args, options) {
 
 async function detectObject(args, options) {
     const workspaceUrl = options.workspace;
-    const apiKey = getApiKeyForWorkspace(workspaceUrl);
+    const apiKey = options.apiKey ? options.apiKey : getApiKeyForWorkspace(workspaceUrl);
 
     const modelUrl = options.model;
     const file = args;
@@ -57,7 +57,13 @@ async function detectObject(args, options) {
     const overlap = options.overlap;
     const confidence = options.confidence;
 
-    const result = await api.detectObject(file, modelUrl, apiKey, { overlap, confidence });
+    const result = await api.detectObject(
+        file,
+        modelUrl,
+        apiKey,
+        { overlap, confidence },
+        options.port
+    );
     console.log(result);
 }
 

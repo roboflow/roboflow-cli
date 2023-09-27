@@ -121,14 +121,16 @@ async function uploadAnnotation(imageID, annotationFile, projectUrl, apiKey) {
     }
 }
 
-async function detectObject(filepath, modelUrl, apiKey, options) {
+async function detectObject(filepath, modelUrl, apiKey, options, port) {
     const image = fs.readFileSync(filepath, {
         encoding: "base64"
     });
 
+    const baseUrl = port ? `http://localhost:${port}` : config.get("RF_OBJECT_DETECTION_URL");
+
     const response = await axios({
         method: "POST",
-        url: `${config.get("RF_OBJECT_DETECTION_URL")}/${modelUrl}`,
+        url: `${baseUrl}/${modelUrl}`,
         params: {
             api_key: apiKey,
             ...options
