@@ -1,92 +1,59 @@
 ![Roboflow banner](https://user-images.githubusercontent.com/60797147/240767170-1793a92b-4ef7-469e-ae43-2a188ea9d2d3.jpeg)
 
-# Roboflow CLI 💻
+# Roboflow CLI (Deprecated)
 
-The Roboflow CLI provides a command line-driven method through which you can interface with Roboflow, upload data, and run inference on images.
+> **This Node.js CLI has been deprecated in favor of the [Roboflow Python package](https://github.com/roboflow/roboflow-python), which includes a built-in CLI along with a full Python SDK. Please use `roboflow-python` for all new projects.**
 
-## Installation 🛠️
+## Migrating to the Roboflow Python Package
 
-This package install a `roboflow` CLI you can use from your terminal.
+Install the replacement with:
 
-To install the Roboflow CLI, use the following command:
-
-```
-npm i -g roboflow-cli
+```bash
+pip install roboflow
 ```
 
-<details close>
-<summary>👉 Run the CLI in a docker container (alpha support)</summary>
+The Python package is a superset of this CLI. Every command available here has an equivalent there, plus significantly more:
 
-### Run the CLI in a docker container (alpha support)
+| Capability | This CLI (Node.js) | `roboflow` Python package |
+|---|---|---|
+| **Auth** | Browser-based login | Browser login **or** API key |
+| **List workspaces & projects** | Yes | Yes |
+| **Upload images** | Yes (single files, glob patterns) | Yes, plus bulk directory upload with parallel workers and retries |
+| **Import datasets** | Yes (folder import, annotation auto-detection) | Yes, with more annotation formats and metadata/tag support |
+| **Download datasets** | Yes (11+ formats, interactive format picker) | Yes (14+ formats including YOLOv8, YOLOv9) |
+| **Run inference** | Yes (detection, classification, instance/semantic seg) | Yes, same model types **plus** keypoint detection, CLIP, and gaze models |
+| **Video inference** | No | Yes |
+| **Create projects** | No | Yes |
+| **Generate dataset versions** | No | Yes (preprocessing + augmentation settings) |
+| **Train models** | No | Yes (`roboflow train` CLI or SDK) |
+| **Deploy custom model weights** | No | Yes (`roboflow upload_model` CLI or SDK) |
+| **Dedicated deployment management** | No | Yes (create, pause, resume, delete, view logs, usage stats) |
+| **Search & export images** | No | Yes (RoboQL query language, export as dataset) |
+| **Active learning** | No | Yes (confidence-based, class-specific, CLIP similarity filtering) |
+| **Annotation job management** | No | Yes (create tasks, manage batches) |
+| **Two-stage model pipelines** | No | Yes (cascade detection + classification or OCR) |
+| **Python SDK for scripting** | No | Yes (full programmatic API) |
 
-If you don't want to install node, npm and other roboflow cli dependencies, but still use the roboflow cli you can run it in a docker container.
+### Command mapping
 
-Assuming you have docker installed on your machine, first build the image
+If you're migrating scripts, here's how the Node CLI commands map:
 
-```
-docker build -t roboflowcli:latest .
-```
+| Node.js CLI | Python CLI equivalent |
+|---|---|
+| `roboflow login` | `roboflow login` |
+| `roboflow workspace list` | `roboflow workspace list` |
+| `roboflow workspace get` | `roboflow workspace get <id>` |
+| `roboflow project list` | `roboflow project list` |
+| `roboflow project get <id>` | `roboflow project get <id>` |
+| `roboflow upload <files> -p <project>` | `roboflow upload <image> -p <project>` |
+| `roboflow import <folder> -p <project>` | `roboflow import <folder> -p <project>` |
+| `roboflow download <url> -f <format>` | `roboflow download <url> -f <format>` |
+| `roboflow infer <file> -m <model>` | `roboflow infer <file> -m <model>` |
+| `roboflow config show` | `roboflow whoami` |
+| `roboflow open` | *(use app.roboflow.com directly)* |
 
-Then, run the Roboflow cli docker image:
+For full documentation, see the [Roboflow API Reference](https://docs.roboflow.com/api-reference).
 
-```
-# Authorize 
-
-docker run -it --rm -v ~/.config/roboflow:/root/.config/roboflow roboflowcli:latest auth
-
-# Use the CLI as usual inside a docker container.
-
-docker run -it --rm -v ~/.config/roboflow:/root/.config/roboflow roboflowcli:latest project list
-```
-
-Here we have mounted the roboflow credentials into the docker container. The first docker command authorizes the user and stores credentials 
-in the user's `$HOME/.config/roboflow` directory. These credentials are then mounted onto the docker container in subsequent runs, as shown above.
-</details>
-
-## Authenticate with the CLI
-
-To authorize your CLI, run the following command.
-
-```
-roboflow login
-```
-
-This will open a browser window and have you log into roboflow where you can select any workspaces you want the CLI to store auth credentials for (The CLi will download the api keys for the workspaces and store them in a config fle in the `~/.config/roboflow` directory on your system).
-
-## Quickstart 🚀
-
-You can use the `roboflow` CLI to:
-
--   list your workspaces
--   select a default workspace to use
--   list your projects
--   upload images to your projects
--   use it to get inference results for local images (for any of your object detection, classification, or segmentation models)
-
-For more info on how to use the CLI see the help an usage instructions by running:
-
-```
-roboflow -h
-```
-
-You can also get specific help for each of the available subcommands, like e.g.:
-
-```
-roboflow upload -h
-```
-
-or
-
-```
-roboflow detect -h
-```
-
-You will similarly have to mount any data directories in case you are uploading images or annotations, for example.
-
-## Documentation 📚
-
-To view a full reference for the RoboflowAPI and CLI, check out the [Roboflow API Reference](https://docs.roboflow.com/api-reference/install-cli).
-
-## License 🧑‍⚖
+## License
 
 This project is licensed under an [MIT license](LICENSE).
