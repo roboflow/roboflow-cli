@@ -176,7 +176,7 @@ async function importDataset(datasetFolder, options) {
         uploadPromises.push(p);
     }
 
-    // await Promise.all(uploadPromises);
+    await Promise.all(uploadPromises);
 }
 
 module.exports = {

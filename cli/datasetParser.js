@@ -10,7 +10,7 @@ function listFilesInFolder(folder) {
     const dirName = path.relative("", path.resolve(folder));
     const globPattern = path.join(dirName, "**/*");
 
-    return glob.sync(globPattern);
+    return glob.sync(globPattern.replace(/\\/g, '/'));
 }
 
 function isImageFile(f) {
