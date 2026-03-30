@@ -2,8 +2,6 @@ const fs = require("fs");
 const path = require("path");
 const pLimit = require("p-limit");
 
-const annotation = require("@roboflow/annotation");
-
 const { selectProjectFromWorkspace, getApiKeyForWorkspace } = require("../core.js");
 
 const { parseFolder } = require("../datasetParser");
